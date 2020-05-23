@@ -41,6 +41,7 @@ public class Main extends ListenerAdapter {
     public static String changelog = changelog110;
 
     public static void main(String[] args) throws LoginException {
+        //test
         JDA builder = JDABuilder.createDefault(Private.token).setStatus(OnlineStatus.ONLINE)
                 .setActivity(Activity.listening("'!help'")).addEventListeners(new Main(), new Commands()).build();
     }
