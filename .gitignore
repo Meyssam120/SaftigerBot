@@ -7,3 +7,4 @@ gradlew.bat
 .idea/
 gradle/
 config.properties
+src/main/java/Private.java
