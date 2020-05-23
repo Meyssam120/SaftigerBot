@@ -1,0 +1,40 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
+
+plugins {
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'java'
+    id 'application'
+}
+
+mainClassName = "Main"
+
+group 'de.meyssam'
+version '2.0-BETA'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    jcenter()
+    google()
+}
+
+dependencies {
+    shadow localGroovy()
+    shadow gradleApi()
+    compile 'com.jagrosh:jda-utilities:3.0.3'
+    compile 'net.dv8tion:JDA:4.1.1_154'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.13'
+    compile "org.slf4j:slf4j-nop:1.7.25"
+}
+
+task relocateShadowJar(type: ConfigureShadowRelocation) {
+    target = tasks.shadowJar
+}
+
+//tasks.shadowJar.dependsOn tasks.relocateShadowJar
+
+
+
+
+

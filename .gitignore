@@ -1,0 +1,9 @@
+.gradle/
+build/
+Forecast.txt
+Future.txt
+gradlew
+gradlew.bat
+.idea/
+gradle/
+config.properties
