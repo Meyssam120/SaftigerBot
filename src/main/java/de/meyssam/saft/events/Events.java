@@ -62,7 +62,4 @@ public class Events extends ListenerAdapter {
             Utils.broadcastMessage(e, e.getMessage().getContentRaw().replace("!broadcast ", "").replace("true ", "").replace("false ", ""), ignore, disappear);
         }
     }
-
-
-
 }
