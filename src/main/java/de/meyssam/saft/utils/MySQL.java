@@ -1,3 +1,5 @@
+package de.meyssam.saft.utils;
+
 import java.sql.*;
 
 /**

@@ -1,3 +1,9 @@
+package de.meyssam.saft.events;
+
+import de.meyssam.saft.Main;
+import de.meyssam.saft.Private;
+import de.meyssam.saft.utils.Tables;
+import de.meyssam.saft.utils.Utils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
@@ -5,9 +11,7 @@ import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import sun.nio.ch.Util;
 
 import java.io.File;
 import java.util.ArrayList;

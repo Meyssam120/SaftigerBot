@@ -1,3 +1,5 @@
+package de.meyssam.saft.utils;
+
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.sql.PreparedStatement;

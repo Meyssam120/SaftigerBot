@@ -1,10 +1,13 @@
-import net.dv8tion.jda.api.Permission;
+package de.meyssam.saft.utils;
+
+import de.meyssam.saft.Main;
+import de.meyssam.saft.Private;
+import de.meyssam.saft.utils.Tables;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.xml.sax.SAXException;
 
@@ -12,7 +15,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 

@@ -9,7 +9,7 @@ plugins {
 mainClassName = "Main"
 
 group 'de.meyssam'
-version '2.0-BETA'
+version '1.10-BETA'
 
 sourceCompatibility = 1.8
 
