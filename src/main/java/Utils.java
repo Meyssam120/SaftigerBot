@@ -230,7 +230,7 @@ public class Utils {
     }
 
     public static void sendBug(GuildMessageReceivedEvent e, String[] args) {
-        if (!e.getMember().getPermissions().contains(Permission.ADMINISTRATOR)) return;
+        //if (!e.getMember().getPermissions().contains(Permission.ADMINISTRATOR)) return;
         Invite i = e.getChannel().createInvite().setMaxUses(1).complete();
         if(args.length > 1) {
             e.getJDA().getUserById(Private.msmID).openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(e.getAuthor().getName() + "#" + e.getAuthor().getDiscriminator()
