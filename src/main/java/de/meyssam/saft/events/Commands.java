@@ -109,7 +109,17 @@ public class Commands extends ListenerAdapter {
                 int i = Integer.parseInt(args[1]) + 1;
                 Utils.clearChat(e.getGuild(), e.getChannel(), i);
             }
-        } else if(args[0].equalsIgnoreCase("!wetter") && args.length > 1) {
+        } else if(args[0].equalsIgnoreCase("!join")) {
+            Utils.deleteCommandMSG(e.getMessage());
+            if(e.getMember().getVoiceState().inVoiceChannel()) {
+                e.getGuild().getAudioManager().openAudioConnection(e.getMember().getVoiceState().getChannel());
+                e.getChannel().sendMessage("Erfolgreich **" + e.getMember().getVoiceState().getChannel().getName() + "** beigetreten").queue(message -> message.delete().queueAfter(3, TimeUnit.SECONDS));
+                return;
+            }
+            e.getChannel().sendMessage("Du musst in einem Voicechannel sein!").queue(message -> message.delete().queueAfter(3, TimeUnit.SECONDS));
+        }
+
+            else if(args[0].equalsIgnoreCase("!wetter") && args.length > 1) {
             e.getChannel().sendTyping().queue();
             Utils.deleteCommandMSG(e.getMessage());
             //noinspection ConstantConditions
