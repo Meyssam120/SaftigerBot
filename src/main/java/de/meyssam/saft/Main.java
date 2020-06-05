@@ -1,5 +1,6 @@
 package de.meyssam.saft;
 
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import de.meyssam.saft.Private;
 import de.meyssam.saft.events.Commands;
 import de.meyssam.saft.events.Events;
@@ -27,11 +28,12 @@ import javax.security.auth.login.LoginException;
 public class Main extends ListenerAdapter {
 
     public static String changelog = Messages.changelog110;
+    public static EventWaiter waiter;
 
     public static void main(String[] args) throws LoginException {
-        //test
+        waiter = new EventWaiter();
         JDA builder = JDABuilder.createDefault(Private.token).setStatus(OnlineStatus.ONLINE)
-                .setActivity(Activity.listening("'!help'")).addEventListeners(new Main(), new Commands(), new Events()).build();
+                .setActivity(Activity.listening("'!help'")).addEventListeners(new Main(), new Commands(waiter), new Events(), waiter).build();
     }
 
     @SuppressWarnings("ConstantConditions")
