@@ -140,23 +140,95 @@ public class Commands extends ListenerAdapter {
     @Override
     public void onGuildVoiceJoin(GuildVoiceJoinEvent e) {
         if(Tables.isVoice(e.getGuild())) Utils.channelJoinAlg(e);
+        if(e.getGuild().getIdLong() == 695933469641146428L) {
+            if(e.getChannelJoined().getMembers().size() == 1) {
+                e.getChannelJoined().getManager().setUserLimit(87).queue();
+            } else if(e.getChannelJoined().getMembers().size() == 2) {
+                e.getChannelJoined().getManager().setUserLimit(55).queue();
+            }else if(e.getChannelJoined().getMembers().size() == 3) {
+                e.getChannelJoined().getManager().setUserLimit(61).queue();
+            }else if(e.getChannelJoined().getMembers().size() == 4) {
+                e.getChannelJoined().getManager().setUserLimit(53).queue();
+            }else if(e.getChannelJoined().getMembers().size() == 5) {
+                e.getChannelJoined().getManager().setUserLimit(25).queue();
+            }else if(e.getChannelJoined().getMembers().size() == 6) {
+                e.getChannelJoined().getManager().setUserLimit(81).queue();
+            }else if(e.getChannelJoined().getMembers().size() == 7) {
+                e.getChannelJoined().getManager().setUserLimit(47).queue();
+            }
+        }
     }
 
     @Override
     public void onGuildVoiceMove(GuildVoiceMoveEvent e) {
         if(Tables.isVoice(e.getGuild())) Utils.channelMoveAlg(e);
+        if(e.getGuild().getIdLong() == 695933469641146428L) {
+            if(e.getChannelJoined().getMembers().size() == 1) {
+                e.getChannelJoined().getManager().setUserLimit(87).queue();
+            } else if(e.getChannelJoined().getMembers().size() == 2) {
+                e.getChannelJoined().getManager().setUserLimit(55).queue();
+            }else if(e.getChannelJoined().getMembers().size() == 3) {
+                e.getChannelJoined().getManager().setUserLimit(61).queue();
+            }else if(e.getChannelJoined().getMembers().size() == 4) {
+                e.getChannelJoined().getManager().setUserLimit(53).queue();
+            }else if(e.getChannelJoined().getMembers().size() == 5) {
+                e.getChannelJoined().getManager().setUserLimit(25).queue();
+            }else if(e.getChannelJoined().getMembers().size() == 6) {
+                e.getChannelJoined().getManager().setUserLimit(81).queue();
+            }else if(e.getChannelJoined().getMembers().size() == 7) {
+                e.getChannelJoined().getManager().setUserLimit(47).queue();
+            }
+        }
+        if(e.getGuild().getIdLong() == 695933469641146428L) {
+            if(e.getChannelLeft().getMembers().size() == 1) {
+                e.getChannelLeft().getManager().setUserLimit(87).queue();
+            } else if(e.getChannelLeft().getMembers().size() == 2) {
+                e.getChannelLeft().getManager().setUserLimit(55).queue();
+            }else if(e.getChannelLeft().getMembers().size() == 3) {
+                e.getChannelLeft().getManager().setUserLimit(61).queue();
+            }else if(e.getChannelLeft().getMembers().size() == 4) {
+                e.getChannelLeft().getManager().setUserLimit(53).queue();
+            }else if(e.getChannelLeft().getMembers().size() == 5) {
+                e.getChannelLeft().getManager().setUserLimit(25).queue();
+            }else if(e.getChannelLeft().getMembers().size() == 6) {
+                e.getChannelLeft().getManager().setUserLimit(81).queue();
+            }else if(e.getChannelLeft().getMembers().size() == 7) {
+                e.getChannelLeft().getManager().setUserLimit(47).queue();
+            }else if(e.getChannelLeft().getMembers().size() == 0) {
+                e.getChannelLeft().getManager().setUserLimit(69).queue();
+            }
+        }
     }
 
     @Override
     public void onGuildVoiceLeave(GuildVoiceLeaveEvent e) {
         if(Tables.isVoice(e.getGuild())) Utils.channelLeaveAlg(e);
+        if(e.getGuild().getIdLong() == 695933469641146428L) {
+            if(e.getChannelLeft().getMembers().size() == 1) {
+                e.getChannelLeft().getManager().setUserLimit(87).queue();
+            } else if(e.getChannelLeft().getMembers().size() == 2) {
+                e.getChannelLeft().getManager().setUserLimit(55).queue();
+            }else if(e.getChannelLeft().getMembers().size() == 3) {
+                e.getChannelLeft().getManager().setUserLimit(61).queue();
+            }else if(e.getChannelLeft().getMembers().size() == 4) {
+                e.getChannelLeft().getManager().setUserLimit(53).queue();
+            }else if(e.getChannelLeft().getMembers().size() == 5) {
+                e.getChannelLeft().getManager().setUserLimit(25).queue();
+            }else if(e.getChannelLeft().getMembers().size() == 6) {
+                e.getChannelLeft().getManager().setUserLimit(81).queue();
+            }else if(e.getChannelLeft().getMembers().size() == 7) {
+                e.getChannelLeft().getManager().setUserLimit(47).queue();
+            }else if(e.getChannelLeft().getMembers().size() == 0) {
+                e.getChannelLeft().getManager().setUserLimit(69).queue();
+            }
+        }
     }
 
     private void getExtras(GuildMessageReceivedEvent e, String arg) {
         if(arg.equalsIgnoreCase("hmm")) {
             e.getMessage().delete().queue();
             File file = new File("F:\\Discord\\BotJava\\build\\libs\\hmm.png");
-            e.getChannel().sendMessage("WICHTIGE BOTSCHAFT VON " + e.getAuthor().getAsMention()).queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
+            e.getChannel().sendMessage("WICHTIGE BOTSCHAFT AN " + e.getGuild().getPublicRole().getAsMention()).queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
             e.getChannel().sendMessage(e.getAuthor().getAsMention()).addFile(file).queueAfter(1, TimeUnit.SECONDS);
         }else if(arg.equalsIgnoreCase("stonks")) {
             e.getMessage().delete().queue();

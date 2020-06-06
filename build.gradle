@@ -6,7 +6,7 @@ plugins {
     id 'application'
 }
 
-mainClassName = "Main"
+mainClassName = "de.meyssam.saft.Main"
 
 group 'de.meyssam'
 version '1.11-BETA'
@@ -23,7 +23,7 @@ dependencies {
     shadow localGroovy()
     shadow gradleApi()
     compile 'com.jagrosh:jda-utilities:3.0.3'
-    compile 'net.dv8tion:JDA:4.1.1_156'
+    compile 'net.dv8tion:JDA:4.1.1_157'
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.13'
     compile "org.slf4j:slf4j-nop:1.7.25"
 }
