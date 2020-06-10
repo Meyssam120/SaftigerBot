@@ -1,26 +1,22 @@
 package de.meyssam.saft;
 
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
-import de.meyssam.saft.Private;
 import de.meyssam.saft.events.Commands;
 import de.meyssam.saft.events.Events;
 import de.meyssam.saft.utils.Messages;
 import de.meyssam.saft.utils.MySQL;
 import de.meyssam.saft.utils.Tables;
-import de.meyssam.saft.utils.Utils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.ReadyEvent;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.security.auth.login.LoginException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Meyssam Saghiri on Apr 28, 2020
@@ -45,10 +41,18 @@ public class Main extends ListenerAdapter {
             Guild g = e.getJDA().getGuildById(s);
             if(!e.getJDA().getGuilds().contains(g)) {
                 Tables.removeServer(g,s);
+                //FileManager.write(g, "webhook", "null");
             }
         }
         for(Guild guild : e.getJDA().getGuilds()) {
+            if(!Tables.isRegistered(guild)) {
+                guild.getDefaultChannel().sendMessage(Messages.welcome).queue();
+                System.out.println("Join " + e.getJDA().getGuilds().size());
+            }
             Tables.setServer(guild);
+            if(Tables.isCommand(guild)) {
+                guild.getDefaultChannel().sendMessage("BOT ONLINE").queue(message -> message.delete().queueAfter(10, TimeUnit.SECONDS));
+            }
         }
         System.out.println("ready");
         System.out.println("Active on " + Tables.allServers().size());
