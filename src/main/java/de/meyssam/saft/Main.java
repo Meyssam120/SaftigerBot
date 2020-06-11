@@ -16,14 +16,13 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.security.auth.login.LoginException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Meyssam Saghiri on Apr 28, 2020
  */
 public class Main extends ListenerAdapter {
 
-    public static String changelog = Messages.changelog110;
+    public static String changelog = Messages.changelog113;
     public static EventWaiter waiter;
 
     public static void main(String[] args) throws LoginException {
@@ -50,9 +49,9 @@ public class Main extends ListenerAdapter {
                 System.out.println("Join " + e.getJDA().getGuilds().size());
             }
             Tables.setServer(guild);
-            if(Tables.isCommand(guild)) {
-                guild.getDefaultChannel().sendMessage("BOT ONLINE").queue(message -> message.delete().queueAfter(10, TimeUnit.SECONDS));
-            }
+            //if(Tables.isCommand(guild)) {
+            //    guild.getDefaultChannel().sendMessage("BOT ONLINE").queue(message -> message.delete().queueAfter(10, TimeUnit.SECONDS));
+            //}
         }
         System.out.println("ready");
         System.out.println("Active on " + Tables.allServers().size());

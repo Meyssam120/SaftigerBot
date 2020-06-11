@@ -4,11 +4,11 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import de.meyssam.saft.Main;
 import de.meyssam.saft.Private;
 import de.meyssam.saft.utils.FileManager;
+import de.meyssam.saft.utils.Mastermind;
 import de.meyssam.saft.utils.Tables;
 import de.meyssam.saft.utils.Utils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by Meyssam Saghiri on Apr 28, 2020
  */
+@SuppressWarnings("ALL")
 public class Commands extends ListenerAdapter {
 
     @Deprecated protected static ArrayList<Guild> mustDelete = new ArrayList<>();
@@ -37,19 +38,12 @@ public class Commands extends ListenerAdapter {
         String msg = e.getMessage().getContentRaw();
         String[] args = Utils.args(msg);
         if(e.getAuthor().isBot()) {
-            //if(mustDelete.contains(e.getGuild())) {
-            //    e.getMessage().delete().completeAfter(5, TimeUnit.SECONDS);
-            //    mustDelete.remove(e.getGuild());
-            //    return;
-            //}
             return;
         }
-        if(e.getMessage().getContentDisplay().equalsIgnoreCase("stop now")) return;
+
         if(args[0].equalsIgnoreCase("!msm")) {
             if(!e.getAuthor().getId().equalsIgnoreCase(Private.msmID)) return;
-            //FileManager.write(e.getGuild(), "user", String.valueOf(e.getGuild().getMembers().size()));
-            Utils.deleteCommandMSG(e.getMessage());
-            //noinspection ConstantConditions
+            e.getMessage().delete().queue();
             if(!e.getGuild().getSelfMember().hasPermission(Permission.MANAGE_ROLES)) {
                 e.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Keine Rechte!").queue());
                 return;
@@ -59,16 +53,21 @@ public class Commands extends ListenerAdapter {
                 System.out.println(role.getPosition());
             });
             return;
-        } else if(args[0].equalsIgnoreCase("!changelog")) {
+        }
+
+        else if(args[0].equalsIgnoreCase("!changelog")) {
             e.getChannel().sendTyping().queue();
-            if(e.getAuthor().getId().equalsIgnoreCase(Private.msmID)) {
-                Utils.sendChangelog(e);
-                e.getMessage().delete().queue();
-            } else  {
+            //if(e.getAuthor().getId().equalsIgnoreCase(Private.msmID)) {
+            //    Utils.sendChangelog(e);
+            //    e.getMessage().delete().queue();
+            //} else  {
                 e.getChannel().sendMessage(Main.changelog).queue();
-            }
-        } else if(args[0].equalsIgnoreCase("!updates")) {
+            //}
+        }
+
+        else if(args[0].equalsIgnoreCase("!updates")) {
             e.getChannel().sendTyping().queue();
+            e.getMessage().delete().queue();
             if(!e.getMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
                 e.getChannel().sendMessage(e.getAuthor().getAsMention() + " du hast nicht die Berechtigung MANAGE_WEBHOOKS").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
                 return;
@@ -81,39 +80,50 @@ public class Commands extends ListenerAdapter {
                 FileManager.write(e.getGuild(), "webhook", webhook.getUrl()+"/github");
             });
             e.getChannel().sendMessage(e.getAuthor().getAsMention() + " Erfolgreich! Der Channel erhält ab jetzt Updatebenachrichtigungen").queue();
-        }else if(args[0].equalsIgnoreCase("!cmd")) {
+        }
+
+        else if(args[0].equalsIgnoreCase("!cmd")) {
             e.getChannel().sendTyping().queue();
-            //noinspection ConstantConditions
             if (!e.getMember().getPermissions().contains(Permission.ADMINISTRATOR)) return;
             Tables.setCommand(e.getGuild());
-            Utils.deleteCommandMSG(e.getMessage());
+            e.getMessage().delete().queue();
             if(Tables.isCommand(e.getGuild())) e.getChannel().sendMessage("Commands sind jetzt auf diesem Server aktiviert!").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
             else e.getChannel().sendMessage("Commands sind nun auf diesem Server deaktiviert").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
-        }else if(args[0].equalsIgnoreCase("!voice")) {
+        }
+
+        else if(args[0].equalsIgnoreCase("!voice")) {
             e.getChannel().sendTyping().queue();
-            //noinspection ConstantConditions
             if (!e.getMember().getPermissions().contains(Permission.ADMINISTRATOR)) return;
             Tables.setVoice(e.getGuild());
-            Utils.deleteCommandMSG(e.getMessage());
+            e.getMessage().delete().queue();
             if(Tables.isVoice(e.getGuild())) e.getChannel().sendMessage("Automatische Channels sind jetzt auf diesem Server aktiviert!").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
             else e.getChannel().sendMessage("Automatische Channels sind nun auf diesem Server deaktiviert").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
-        } else if(args[0].equalsIgnoreCase("!bug")) {
+        }
+
+        else if(args[0].equalsIgnoreCase("!bug")) {
             e.getChannel().sendTyping().queue();
             Utils.sendBug(e, args);
-        }else if (args[0].equalsIgnoreCase("!case")) {
+        }
+
+        else if (args[0].equalsIgnoreCase("!case")) {
             e.getChannel().sendTyping().queue();
             e.getMessage().delete().queue();
-            //noinspection ConstantConditions
             e.getChannel().sendMessage(e.getMember().getEffectiveName() + ": " + Utils.randomCase(e.getMessage().getContentDisplay().replace("!case ", ""))).queue();
         }
+
         if(!Tables.isCommand(e.getGuild())) {
             return;
         }
+
         if(args.length == 1) getExtras(e, args[0]);
+
         if(args[0].equalsIgnoreCase("!clearchat")) {
             e.getChannel().sendTyping().queue();
-            //noinspection ConstantConditions
-            if(!e.getMember().getPermissions().contains(Permission.MESSAGE_MANAGE)) return;
+            if(!e.getMember().getPermissions().contains(Permission.MESSAGE_MANAGE)) {
+                e.getMessage().delete().queueAfter(3, TimeUnit.SECONDS);
+                e.getChannel().sendMessage(e.getAuthor().getAsMention() + " Du hat nicht die Berechtigung MESSAGE_MANAGE").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
+                return;
+            }
             if(args.length == 1) {
                 e.getMessage().delete().queueAfter(5, TimeUnit.SECONDS);
                 e.getChannel().sendMessage("Willst du wirklich alle Nachrichten aus dem Channel löschen?").queue(message -> {
@@ -131,8 +141,10 @@ public class Commands extends ListenerAdapter {
                 int i = Integer.parseInt(args[1]) + 1;
                 Utils.clearChat(e.getGuild(), e.getChannel(), i);
             }
-        } else if(args[0].equalsIgnoreCase("!join")) {
-            Utils.deleteCommandMSG(e.getMessage());
+        }
+
+        else if(args[0].equalsIgnoreCase("!join")) {
+            e.getMessage().delete().queue();
             if(e.getMember().getVoiceState().inVoiceChannel()) {
                 e.getGuild().getAudioManager().openAudioConnection(e.getMember().getVoiceState().getChannel());
                 e.getChannel().sendMessage("Erfolgreich **" + e.getMember().getVoiceState().getChannel().getName() + "** beigetreten").queue(message -> message.delete().queueAfter(3, TimeUnit.SECONDS));
@@ -141,22 +153,31 @@ public class Commands extends ListenerAdapter {
             e.getChannel().sendMessage("Du musst in einem Voicechannel sein!").queue(message -> message.delete().queueAfter(3, TimeUnit.SECONDS));
         }
 
-            else if(args[0].equalsIgnoreCase("!wetter") && args.length > 1) {
+        else if(args[0].equalsIgnoreCase("!wetter") && args.length > 1) {
             e.getChannel().sendTyping().queue();
-            Utils.deleteCommandMSG(e.getMessage());
-            //noinspection ConstantConditions
+            e.getMessage().delete().queue();
             e.getChannel().sendMessage("Für " + e.getMember().getAsMention() + "\n" + Utils.getWeather(e.getGuild(), msg.replace("!wetter ", ""))).queue(message -> message.delete().queueAfter(1, TimeUnit.MINUTES));
-        } else if(args[0].equalsIgnoreCase("!history")) {
+        }
+
+        else if(args[0].equalsIgnoreCase("!history")) {
             e.getChannel().sendTyping().queue();
             if(args.length == 1) {
                 Utils.printHistory(e.getAuthor(), e);
             } else if(args.length == 2) {
-                //User user = e.getJDA().getUserById(e.getMessage().getContentRaw().replace("!history ", "").replace("<@!", "").replace(">", ""));
-                User user1;
                 e.getJDA().retrieveUserById(e.getMessage().getContentRaw().replace("!history ", "").replace("<@!", "").replace(">", "")).queue(user2 -> Utils.printHistory(user2, e));
-                //Utils.printHistory(user, e);
             }
-        } else if(args[0].equalsIgnoreCase("!help")) Utils.printHelp(e.getChannel());
+        }
+
+        else if(args[0].equalsIgnoreCase("!mastermind")) {
+            e.getChannel().sendTyping().queue();
+            if(args.length == 2) {
+                Mastermind.playMastermind(waiter, e);
+            } else {
+                e.getChannel().sendMessage(e.getAuthor().getAsMention() + " Nutze **!mastermind <vierstellige Zahl>**").queue();
+            }
+        }
+
+        else if(args[0].equalsIgnoreCase("!help")) Utils.printHelp(e.getChannel());
     }
 
     @Override

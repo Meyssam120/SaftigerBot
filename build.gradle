@@ -9,7 +9,7 @@ plugins {
 mainClassName = "de.meyssam.saft.Main"
 
 group 'de.meyssam'
-version '1.12-BETA'
+version '1.13-BETA'
 
 sourceCompatibility = 1.8
 

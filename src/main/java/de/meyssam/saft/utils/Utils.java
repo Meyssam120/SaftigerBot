@@ -2,7 +2,6 @@ package de.meyssam.saft.utils;
 
 import de.meyssam.saft.Main;
 import de.meyssam.saft.Private;
-import de.meyssam.saft.utils.Tables;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
@@ -162,25 +161,13 @@ public class Utils {
         return "Fehler (404): Beachte bitte, dass die Städtenamen englisch sein müssen.";
     }
 
+    @Deprecated
     public static void deleteCommandMSG(Message message){
         message.delete().queue();
     }
 
     public static void printHelp(MessageChannel channel) {
-        String out = "Willkommen bei Meyssams saftigem Bot! :warning: Folgende Commands gibt es:\n" +
-                "```!bug [<Nachricht>] = Sendet einen Bugreport an einen Botadministrator, welcher sich um das Problem kümmern wird```" +
-                "```!case <Nachricht> = Sendet in deinem Namen eine interessante Nachricht in den Chat```" +
-                "```!changelog = Sendet die neusten Änderungen des Bots in den Channel```" +
-                "```!clearchat [<Zahl>] = Leert entweder den ganzen Channel oder eine Anzahl an Nachrichten*```" +
-                "```!cmd = (De-)Aktiviert alle nicht-essenziellen Commands (mit * markiert)```"+
-                "```!history [<@ oder User-ID>] = Zeigt wann ein Nutzer Discord beigetreten ist*```" +
-                "```hmm = Guck was passiert*```" +
-                "```stonks = Guck was passiert*```" +
-                "```!voice = (De-)Aktiviert automatische Channels```"+
-                "```!wetter <Stadt> = Zeigt das Wetter der Stadt an (Stadt muss englisch sein: Düsseldorf = Dusseldorf; Köln = Cologne)*```" +
-                "Einige Commands benötigen die passende Berechtigung zum Benutzen.\n" +
-                ":warning: Achtung: Der Voicealgorithmus ist nur für Channel gedacht, die in eine Kategorie eingeordnet sind.\"";
-        channel.sendMessage(out).queue();
+        channel.sendMessage(Messages.help).queue();
     }
 
     public static void printHistory(User user, GuildMessageReceivedEvent e) {
@@ -240,7 +227,7 @@ public class Utils {
                     + ": " + e.getMessage().getContentDisplay().replace("!bug ", "")).queue());
         }
         e.getJDA().getUserById(Private.msmID).openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(i.getUrl()).queue());
-        Utils.deleteCommandMSG(e.getMessage());
+        e.getMessage().delete().queue();
         e.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Fehler gesendet, ein Admin wird sich bald bei dir melden! Sollte sich innerhalb 24 Stunden niemand bei dir melden, wiederhole '!bug'").queue());
     }
 
