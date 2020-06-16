@@ -139,7 +139,7 @@ public class Commands extends ListenerAdapter {
                 });
             } else if(args.length == 2) {
                 int i = Integer.parseInt(args[1]) + 1;
-                Utils.clearChat(e.getGuild(), e.getChannel(), i);
+                Utils.clearChat(e.getChannel(), i);
             }
         }
 

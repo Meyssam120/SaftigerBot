@@ -176,7 +176,7 @@ public class Utils {
         int year = user.getTimeCreated().getYear();
         if(day<10) e.getChannel().sendMessage("Discord beigetreten am: 0" + day + "." + month + "." + year).queue();
         else e.getChannel().sendMessage("Discord beigetreten am: "+day + "." + month + "." + year).queue();
-        if(e.getGuild().getMember(user) != null) {
+        if(e.getGuild().isMember(user)) {
             int dayj = e.getGuild().getMember(user).getTimeJoined().getDayOfMonth();
             int monthj = e.getGuild().getMember(user).getTimeJoined().getMonth().getValue();
             int yearj = e.getGuild().getMember(user).getTimeJoined().getYear();
@@ -185,7 +185,7 @@ public class Utils {
         }
     }
 
-    public static void clearChat(Guild guild, MessageChannel channel, int i) {
+    public static void clearChat(MessageChannel channel, int i) {
         for(Message message : channel.getIterableHistory()) {
             if(i > 0) {
                 message.delete().queueAfter(10, TimeUnit.MILLISECONDS);
