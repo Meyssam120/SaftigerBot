@@ -63,33 +63,34 @@ public class Mastermind {
         String zahl = createZahl();
         System.out.println(zahl);
         e.getChannel().sendMessage(e.getAuthor().getAsMention() + " Du spielst jetzt **Mastermind**. Zum Beenden, errate entweder die Zahl, oder schreibe **stop**").queue();
-        waitForMasterMind(waiter, e.getAuthor(), zahl, 0);
+        waitForMasterMind(waiter, e.getAuthor().getIdLong(), zahl, 0);
     }
 
-    public static void waitForMasterMind(EventWaiter waiter, User user, String zahl, int zaehler) {
-        waiter.waitForEvent(GuildMessageReceivedEvent.class, guildM -> guildM.getAuthor() == user, event -> {
+    public static void waitForMasterMind(EventWaiter waiter, long user, String zahl, int zaehler) {
+        waiter.waitForEvent(GuildMessageReceivedEvent.class, guildM -> guildM.getAuthor().getIdLong() == user, event -> {
+            User userr = event.getJDA().getUserById(user);
             String message = event.getMessage().getContentRaw().replace("!mastermind ", "");
             if(message.equalsIgnoreCase("stop")) {
-                event.getChannel().sendMessage(user.getAsMention() + " Mastermind wurde **abgebrochen**").queue();
+                event.getChannel().sendMessage(userr.getAsMention() + " Mastermind wurde **abgebrochen**").queue();
                 return;
             }
             if(message.toCharArray().length != 4) {
-                event.getChannel().sendMessage(user.getAsMention() + " Deine Zahl muss **4 Stellen** haben, versuche es erneut!").queue();
+                event.getChannel().sendMessage(userr.getAsMention() + " Deine Zahl muss **4 Stellen** haben, versuche es erneut!").queue();
                 waitForMasterMind(waiter, user, zahl, zaehler);
                 return;
             }
             try {
                 Integer.parseInt(message);
             }catch (NumberFormatException exception) {
-                event.getChannel().sendMessage(user.getAsMention() + " Du musst eine **vierstellige Zahl** verwenden").queue();
+                event.getChannel().sendMessage(userr.getAsMention() + " Du musst eine **vierstellige Zahl** verwenden").queue();
                 return;
             }
 
-            if(!zahl.equals(message)) {
+            if(!zahl.contains(message)) {
                 event.getChannel().sendMessage(rueckmeldung(zahl, message)).queue();
                 waitForMasterMind(waiter, user, zahl, zaehler+1);
             } else {
-                event.getChannel().sendMessage(user.getAsMention() + " Herzlichen Glückwunsch, deine Zahl ist richtig! Gebrauchte Versuche: **" + zaehler + "**").queue();
+                event.getChannel().sendMessage(userr.getAsMention() + " Herzlichen Glückwunsch, deine Zahl ist richtig! Gebrauchte Versuche: **" + zaehler + "**").queue();
             }
         });
     }
