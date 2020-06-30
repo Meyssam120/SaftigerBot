@@ -3,9 +3,7 @@ package de.meyssam.saft.events;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import de.meyssam.saft.Main;
 import de.meyssam.saft.Private;
-import de.meyssam.saft.utils.FileManager;
 import de.meyssam.saft.utils.Mastermind;
-import de.meyssam.saft.utils.Tables;
 import de.meyssam.saft.utils.Utils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -44,6 +42,7 @@ public class Commands extends ListenerAdapter {
         if(args[0].equalsIgnoreCase("!msm")) {
             if(!e.getAuthor().getId().equalsIgnoreCase(Private.msmID)) return;
             e.getMessage().delete().queue();
+            Main.tables.setServer(e.getGuild());
             if(!e.getGuild().getSelfMember().hasPermission(Permission.MANAGE_ROLES)) {
                 e.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Keine Rechte!").queue());
                 return;
@@ -65,38 +64,38 @@ public class Commands extends ListenerAdapter {
             //}
         }
 
-        else if(args[0].equalsIgnoreCase("!updates")) {
-            e.getChannel().sendTyping().queue();
-            e.getMessage().delete().queue();
-            if(!e.getMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
-                e.getChannel().sendMessage(e.getAuthor().getAsMention() + " du hast nicht die Berechtigung MANAGE_WEBHOOKS").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
-                return;
-            }
-            if(!e.getGuild().getSelfMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
-                e.getChannel().sendMessage(e.getAuthor().getAsMention() + " der Bot hat nicht die Berechtigung MANAGE_WEBHOOKS").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
-                return;
-            }
-            e.getChannel().createWebhook("saftbot").queue(webhook -> {
-                FileManager.write(e.getGuild(), "webhook", webhook.getUrl()+"/github");
-            });
-            e.getChannel().sendMessage(e.getAuthor().getAsMention() + " Erfolgreich! Der Channel erhält ab jetzt Updatebenachrichtigungen").queue();
-        }
+        //else if(args[0].equalsIgnoreCase("!updates")) {
+        //    e.getChannel().sendTyping().queue();
+        //    e.getMessage().delete().queue();
+        //    if(!e.getMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
+        //        e.getChannel().sendMessage(e.getAuthor().getAsMention() + " du hast nicht die Berechtigung MANAGE_WEBHOOKS").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
+        //        return;
+        //    }
+        //    if(!e.getGuild().getSelfMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
+        //        e.getChannel().sendMessage(e.getAuthor().getAsMention() + " der Bot hat nicht die Berechtigung MANAGE_WEBHOOKS").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
+        //        return;
+        //    }
+        //    e.getChannel().createWebhook("saftbot").queue(webhook -> {
+        //        FileManager.write(e.getGuild(), "webhook", webhook.getUrl()+"/github");
+        //    });
+        //    e.getChannel().sendMessage(e.getAuthor().getAsMention() + " Erfolgreich! Der Channel erh?lt ab jetzt Updatebenachrichtigungen").queue();
+        //}
 
         else if(args[0].equalsIgnoreCase("!cmd")) {
             e.getChannel().sendTyping().queue();
             if (!e.getMember().getPermissions().contains(Permission.ADMINISTRATOR)) return;
-            Tables.setCommand(e.getGuild());
+            Main.tables.setCommand(e.getGuild());
             e.getMessage().delete().queue();
-            if(Tables.isCommand(e.getGuild())) e.getChannel().sendMessage("Commands sind jetzt auf diesem Server aktiviert!").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
+            if(Main.tables.isCommand(e.getGuild())) e.getChannel().sendMessage("Commands sind jetzt auf diesem Server aktiviert!").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
             else e.getChannel().sendMessage("Commands sind nun auf diesem Server deaktiviert").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
         }
 
         else if(args[0].equalsIgnoreCase("!voice")) {
             e.getChannel().sendTyping().queue();
             if (!e.getMember().getPermissions().contains(Permission.ADMINISTRATOR)) return;
-            Tables.setVoice(e.getGuild());
+            Main.tables.setVoice(e.getGuild());
             e.getMessage().delete().queue();
-            if(Tables.isVoice(e.getGuild())) e.getChannel().sendMessage("Automatische Channels sind jetzt auf diesem Server aktiviert!").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
+            if(Main.tables.isVoice(e.getGuild())) e.getChannel().sendMessage("Automatische Channels sind jetzt auf diesem Server aktiviert!").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
             else e.getChannel().sendMessage("Automatische Channels sind nun auf diesem Server deaktiviert").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
         }
 
@@ -111,7 +110,7 @@ public class Commands extends ListenerAdapter {
             e.getChannel().sendMessage(e.getMember().getEffectiveName() + ": " + Utils.randomCase(e.getMessage().getContentDisplay().replace("!case ", ""))).queue();
         }
 
-        if(!Tables.isCommand(e.getGuild())) {
+        if(!Main.tables.isCommand(e.getGuild())) {
             return;
         }
 
@@ -126,7 +125,7 @@ public class Commands extends ListenerAdapter {
             }
             if(args.length == 1) {
                 e.getMessage().delete().queueAfter(5, TimeUnit.SECONDS);
-                e.getChannel().sendMessage("Willst du wirklich alle Nachrichten aus dem Channel löschen?").queue(message -> {
+                e.getChannel().sendMessage("Willst du wirklich alle Nachrichten aus dem Channel l?schen?").queue(message -> {
                     message.addReaction("\u2705").queue();
                     message.addReaction("\u274C").queue();
                 });
@@ -156,7 +155,7 @@ public class Commands extends ListenerAdapter {
         else if(args[0].equalsIgnoreCase("!wetter") && args.length > 1) {
             e.getChannel().sendTyping().queue();
             e.getMessage().delete().queue();
-            e.getChannel().sendMessage("Für " + e.getMember().getAsMention() + "\n" + Utils.getWeather(e.getGuild(), msg.replace("!wetter ", ""))).queue(message -> message.delete().queueAfter(1, TimeUnit.MINUTES));
+            e.getChannel().sendMessage("F?r " + e.getMember().getAsMention() + "\n" + Utils.getWeather(e.getGuild(), msg.replace("!wetter ", ""))).queue(message -> message.delete().queueAfter(1, TimeUnit.MINUTES));
         }
 
         else if(args[0].equalsIgnoreCase("!history")) {
@@ -182,7 +181,7 @@ public class Commands extends ListenerAdapter {
 
     @Override
     public void onGuildVoiceJoin(GuildVoiceJoinEvent e) {
-        if(Tables.isVoice(e.getGuild())) Utils.channelJoinAlg(e);
+        if(Main.tables.isVoice(e.getGuild())) Utils.channelJoinAlg(e);
         if(e.getGuild().getIdLong() == 695933469641146428L) {
             if(e.getChannelJoined().getMembers().size() == 1) {
                 e.getChannelJoined().getManager().setUserLimit(87).queue();
@@ -204,7 +203,7 @@ public class Commands extends ListenerAdapter {
 
     @Override
     public void onGuildVoiceMove(GuildVoiceMoveEvent e) {
-        if(Tables.isVoice(e.getGuild())) Utils.channelMoveAlg(e);
+        if(Main.tables.isVoice(e.getGuild())) Utils.channelMoveAlg(e);
         if(e.getGuild().getIdLong() == 695933469641146428L) {
             if(e.getChannelJoined().getMembers().size() == 1) {
                 e.getChannelJoined().getManager().setUserLimit(87).queue();
@@ -245,7 +244,7 @@ public class Commands extends ListenerAdapter {
 
     @Override
     public void onGuildVoiceLeave(GuildVoiceLeaveEvent e) {
-        if(Tables.isVoice(e.getGuild())) Utils.channelLeaveAlg(e);
+        if(Main.tables.isVoice(e.getGuild())) Utils.channelLeaveAlg(e);
         if(e.getGuild().getIdLong() == 695933469641146428L) {
             if(e.getChannelLeft().getMembers().size() == 1) {
                 e.getChannelLeft().getManager().setUserLimit(87).queue();

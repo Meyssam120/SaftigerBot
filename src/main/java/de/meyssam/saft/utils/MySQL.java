@@ -1,6 +1,9 @@
 package de.meyssam.saft.utils;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * Created by Meyssam on 10.07.2016.
@@ -34,7 +37,7 @@ public class MySQL {
                 con.close();
             } catch (SQLException e) {
                 e.printStackTrace();
-                System.out.println("Es ist ein Fehler beim Schlie√üen der MySQL-Verbindung aufgetreten!");
+                System.out.println("Es ist ein Fehler beim Schlieﬂen der MySQL-Verbindung aufgetreten!");
             }
             System.out.println("MySQL-Verbindung geschlossen!");
         }

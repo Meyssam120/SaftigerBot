@@ -1,5 +1,6 @@
 package de.meyssam.saft.utils;
 
+import de.meyssam.saft.localsystem.FileSystem;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.sql.PreparedStatement;
@@ -11,15 +12,15 @@ import java.util.List;
 /**
  * Created by Meyssam Saghiri on Mai 01, 2020
  */
-public class Tables {
+public class Tables implements FileSystem {
 
-    public static void setServer(Guild guild) {
+    public void setServer(Guild guild) {
         if(!isRegistered(guild)) {
             MySQL.update("INSERT INTO serverlist (ID, CMD, VOICE) VALUES (" + guild.getId() + ", TRUE, TRUE)");
         }
     }
 
-    public static void removeServer(Guild guild, String id) {
+    public void removeServer(Guild guild, String id) {
         if(guild == null) {
             MySQL.update("DELETE FROM serverlist WHERE ID = '" + id + "'");
             return;
@@ -29,7 +30,7 @@ public class Tables {
         }
     }
 
-    public static boolean isCommand(Guild guild) {
+    public boolean isCommand(Guild guild) {
         String s = "TRUE";
         try {
             PreparedStatement ps = MySQL.con.prepareStatement("SELECT * FROM serverlist WHERE ID=?");
@@ -44,7 +45,7 @@ public class Tables {
         return !s.equalsIgnoreCase("0");
     }
 
-    public static boolean isVoice(Guild guild) {
+    public boolean isVoice(Guild guild) {
         String s = "TRUE";
         try {
             PreparedStatement ps = MySQL.con.prepareStatement("SELECT * FROM serverlist WHERE ID=?");
@@ -59,15 +60,15 @@ public class Tables {
         return !s.equalsIgnoreCase("0");
     }
 
-    public static void setVoice(Guild guild) {
+    public void setVoice(Guild guild) {
         MySQL.update("UPDATE serverlist SET VOICE = " + (!isVoice(guild)) + " WHERE ID=" + guild.getId());
     }
 
-    public static void setCommand(Guild guild) {
+    public void setCommand(Guild guild) {
         MySQL.update("UPDATE serverlist SET CMD = " + (!isCommand(guild)) + " WHERE ID=" + guild.getId());
     }
 
-    public static boolean isRegistered(Guild guild) {
+    public boolean isRegistered(Guild guild) {
             try {
                 PreparedStatement ps = MySQL.con.prepareStatement("SELECT ID FROM serverlist WHERE ID=?");
                 ps.setString(1, guild.getId());
@@ -89,12 +90,12 @@ public class Tables {
             }
             return i;
         } catch (SQLException e) {
-            System.out.println("Fehler beim ZÃ¤hlen");
+            System.out.println("Fehler beim Zählen");
         }
         return 0;
     }
 
-    public static List<String> allServers() {
+    public List<String> allServers() {
         List<String> temp = new ArrayList<>();
         try {
             ResultSet rs = MySQL.getResult("SELECT * FROM serverlist");

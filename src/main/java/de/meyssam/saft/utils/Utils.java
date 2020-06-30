@@ -209,7 +209,7 @@ public class Utils {
                 channel.sendMessage("Du erhälst diese Nachricht, weil du ein Servereigentümer bist:").queue();
                 channel.sendMessage(Main.changelog).queue();
             });
-            if(Tables.isCommand(guild)) {
+            if(Main.tables.isCommand(guild)) {
                 System.out.println(guild.getName());
                 guild.getSystemChannel().sendMessage(Main.changelog).queue();
             }
@@ -249,7 +249,7 @@ public class Utils {
             }
         } else {
             for(Guild guild : messageEvent.getJDA().getGuilds()) {
-                if(Tables.isCommand(guild)) guild.getDefaultChannel().sendMessage(message).queue(msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
+                if(Main.tables.isCommand(guild)) guild.getDefaultChannel().sendMessage(message).queue(msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
             }
         }
     }

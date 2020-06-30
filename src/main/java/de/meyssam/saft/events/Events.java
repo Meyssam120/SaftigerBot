@@ -1,9 +1,7 @@
 package de.meyssam.saft.events;
 
+import de.meyssam.saft.Main;
 import de.meyssam.saft.Private;
-import de.meyssam.saft.utils.Messages;
-import de.meyssam.saft.utils.MySQL;
-import de.meyssam.saft.utils.Tables;
 import de.meyssam.saft.utils.Utils;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
@@ -26,18 +24,14 @@ public class Events extends ListenerAdapter {
         Utils.printMessage(e);
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Override
     public void onGuildJoin(GuildJoinEvent e) {
-        Tables.setServer(e.getGuild());
-        e.getGuild().getDefaultChannel().sendMessage(Messages.welcome).queue();
-        System.out.println("Join " + e.getJDA().getGuilds().size());
+        Main.tables.setServer(e.getGuild());
     }
 
     @Override
     public void onGuildLeave(GuildLeaveEvent e) {
-        Tables.removeServer(e.getGuild(), e.getGuild().getId());
-        System.out.println("Leave " + e.getJDA().getGuilds().size());
+        Main.tables.removeServer(e.getGuild(), e.getGuild().getId());
     }
 
     @Override
@@ -46,7 +40,8 @@ public class Events extends ListenerAdapter {
         if(!e.getAuthor().getId().equalsIgnoreCase(Private.msmID)) return;
         String[] args = Utils.args(e.getMessage().getContentRaw());
         if(e.getMessage().getContentRaw().equalsIgnoreCase("stop now")) {
-            MySQL.close();
+            Main.tables.saveAsString(Main.serverlist);
+            //MySQL.close();
             e.getChannel().sendMessage("Stopping...").complete();
             System.out.println("Stopping...");
             e.getJDA().shutdown();
