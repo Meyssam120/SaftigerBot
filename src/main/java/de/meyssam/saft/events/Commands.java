@@ -3,6 +3,7 @@ package de.meyssam.saft.events;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import de.meyssam.saft.Main;
 import de.meyssam.saft.Private;
+import de.meyssam.saft.utils.FileManager;
 import de.meyssam.saft.utils.Mastermind;
 import de.meyssam.saft.utils.Utils;
 import net.dv8tion.jda.api.Permission;
@@ -64,22 +65,26 @@ public class Commands extends ListenerAdapter {
             //}
         }
 
-        //else if(args[0].equalsIgnoreCase("!updates")) {
-        //    e.getChannel().sendTyping().queue();
-        //    e.getMessage().delete().queue();
-        //    if(!e.getMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
-        //        e.getChannel().sendMessage(e.getAuthor().getAsMention() + " du hast nicht die Berechtigung MANAGE_WEBHOOKS").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
-        //        return;
-        //    }
-        //    if(!e.getGuild().getSelfMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
-        //        e.getChannel().sendMessage(e.getAuthor().getAsMention() + " der Bot hat nicht die Berechtigung MANAGE_WEBHOOKS").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
-        //        return;
-        //    }
-        //    e.getChannel().createWebhook("saftbot").queue(webhook -> {
-        //        FileManager.write(e.getGuild(), "webhook", webhook.getUrl()+"/github");
-        //    });
-        //    e.getChannel().sendMessage(e.getAuthor().getAsMention() + " Erfolgreich! Der Channel erh?lt ab jetzt Updatebenachrichtigungen").queue();
-        //}
+        else if(args[0].equalsIgnoreCase("!updates")) {
+            e.getChannel().sendTyping().queue();
+            e.getMessage().delete().queue();
+            if(!e.getMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
+                e.getChannel().sendMessage(e.getAuthor().getAsMention() + " du hast nicht die Berechtigung MANAGE_WEBHOOKS").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
+                return;
+            }
+            if(!e.getGuild().getSelfMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
+                e.getChannel().sendMessage(e.getAuthor().getAsMention() + " der Bot hat nicht die Berechtigung MANAGE_WEBHOOKS").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
+                return;
+            }
+            e.getChannel().createWebhook("saftbot").queue(webhook -> {
+                FileManager.addWebhook(e.getGuild(), webhook.getUrl());
+                System.out.println("New Webhook: " + e.getGuild().getId());
+                e.getJDA().retrieveUserById(Private.msmID).queue(user -> user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("New Webhook: " + e.getGuild().getId()).queue()));
+                //FileManager.write(e.getGuild(), "webhook", webhook.getUrl()+"/github");
+            });
+            e.getChannel().sendMessage(e.getAuthor().getAsMention() + " Erfolgreich! Der Channel erhält ab jetzt Updatebenachrichtigungen.\nZum **Deaktivieren** einfach in den " +
+                    "Servereinstellungen das Webhook 'Saftbot' löschen.").queue();
+        }
 
         else if(args[0].equalsIgnoreCase("!cmd")) {
             e.getChannel().sendTyping().queue();
@@ -125,7 +130,7 @@ public class Commands extends ListenerAdapter {
             }
             if(args.length == 1) {
                 e.getMessage().delete().queueAfter(5, TimeUnit.SECONDS);
-                e.getChannel().sendMessage("Willst du wirklich alle Nachrichten aus dem Channel l?schen?").queue(message -> {
+                e.getChannel().sendMessage("Willst du wirklich alle Nachrichten aus dem Channel löschen?").queue(message -> {
                     message.addReaction("\u2705").queue();
                     message.addReaction("\u274C").queue();
                 });
@@ -155,7 +160,7 @@ public class Commands extends ListenerAdapter {
         else if(args[0].equalsIgnoreCase("!wetter") && args.length > 1) {
             e.getChannel().sendTyping().queue();
             e.getMessage().delete().queue();
-            e.getChannel().sendMessage("F?r " + e.getMember().getAsMention() + "\n" + Utils.getWeather(e.getGuild(), msg.replace("!wetter ", ""))).queue(message -> message.delete().queueAfter(1, TimeUnit.MINUTES));
+            e.getChannel().sendMessage("Für " + e.getMember().getAsMention() + "\n" + Utils.getWeather(e.getGuild(), msg.replace("!wetter ", ""))).queue(message -> message.delete().queueAfter(1, TimeUnit.MINUTES));
         }
 
         else if(args[0].equalsIgnoreCase("!history")) {

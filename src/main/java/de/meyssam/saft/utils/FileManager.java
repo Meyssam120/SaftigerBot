@@ -3,8 +3,6 @@ package de.meyssam.saft.utils;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 /**
@@ -77,31 +75,19 @@ public class FileManager {
         }
     }
 
-    public static void addServer(Guild guild) {
+    public static void addWebhook(Guild guild, String link) {
+        File pfile = new File("F:\\Discord\\BotJava\\build\\libs\\" + guild.getId() + ".properties");
+        String out = link + "/github";
         try {
-            String id = guild.getId();
+            if(!pfile.exists()) pfile.createNewFile();
             Properties props = new Properties();
-            props.setProperty(id + ".registered", "true");
-            props.setProperty(id + ".cmd", "true");
-            props.setProperty(id + ".voice", "true");
-            FileWriter writer = new FileWriter("config.properties");
-            props.store(writer, "Server config");
+            props.setProperty("webhook", out);
+            FileWriter writer = new FileWriter(pfile);
+            props.store(writer, "Webhook");
             writer.close();
-        } catch (FileNotFoundException ex) {
-            System.out.println("Datei fehlt");
-        } catch (IOException ex) {
-            // I/O error
+        } catch (IOException e) {
+
         }
-    }
-
-
-    public static List<String> getEntries() throws IOException {
-        List<String> out = new ArrayList<>();
-        FileReader reader = new FileReader(configFile);
-        Properties props = new Properties();
-        props.load(reader);
-        System.out.println(props.keySet());
-        return null;
     }
 
 }
