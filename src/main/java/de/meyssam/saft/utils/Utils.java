@@ -2,6 +2,7 @@ package de.meyssam.saft.utils;
 
 import de.meyssam.saft.Main;
 import de.meyssam.saft.Private;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
@@ -265,5 +266,12 @@ public class Utils {
             }
         }
         return out;
+    }
+
+    public static void errorToAdmin(Guild guild, String cmd, Permission permission) {
+        User user = guild.getOwner().getUser();
+        String perm = permission.toString();
+        user.openPrivateChannel().queue(channel -> channel.sendMessage("Ein Member deines Servers scheiterte beim Versuch den Command **" + cmd + "** auszuführen, da dem " +
+                "Bot die Berechtigung **" + perm + "** fehlt. Bitte überprüfe dies in den Rolleneinstellungen deines Servers.").queue());
     }
 }
