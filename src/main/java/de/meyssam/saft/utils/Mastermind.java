@@ -12,7 +12,7 @@ import java.util.Random;
  */
 public class Mastermind {
 
-    public static String createZahl() {
+    public String createZahl() {
         Random random = new Random();
         StringBuilder out = new StringBuilder();
         for(int i = 0; i < 4; i++) {
@@ -21,7 +21,7 @@ public class Mastermind {
         return out.toString();
     }
 
-    public static Integer checkZahlen(String zahl, String message) {
+    public Integer checkZahlen(String zahl, String message) {
         HashMap<Character, Integer> characterIntegerHashMap = new HashMap<>();
         int richtig = 0;
 
@@ -47,7 +47,7 @@ public class Mastermind {
         return richtig;
     }
 
-    public static Integer checkPositionen(String zahl, String message) {
+    public Integer checkPositionen(String zahl, String message) {
         int richtig = 0;
 
         for (int i = 0; i < 4; i++) {
@@ -59,14 +59,14 @@ public class Mastermind {
         return richtig;
     }
 
-    public static void playMastermind(EventWaiter waiter, GuildMessageReceivedEvent e) {
+    public void playMastermind(EventWaiter waiter, GuildMessageReceivedEvent e) {
         String zahl = createZahl();
         System.out.println(zahl);
         e.getChannel().sendMessage(e.getAuthor().getAsMention() + " Du spielst jetzt **Mastermind**. Zum Beenden, errate entweder die Zahl, oder schreibe **stop**").queue();
         waitForMasterMind(waiter, e.getAuthor().getIdLong(), zahl, 0);
     }
 
-    public static void waitForMasterMind(EventWaiter waiter, long user, String zahl, int zaehler) {
+    public void waitForMasterMind(EventWaiter waiter, long user, String zahl, int zaehler) {
         waiter.waitForEvent(GuildMessageReceivedEvent.class, guildM -> guildM.getAuthor().getIdLong() == user, event -> {
             User userr = event.getJDA().getUserById(user);
             String message = event.getMessage().getContentRaw().replace("!mastermind ", "");
@@ -95,7 +95,7 @@ public class Mastermind {
         });
     }
 
-    public static String rueckmeldung(String zahl, String message) {
+    public String rueckmeldung(String zahl, String message) {
         return "Du hast **" + checkZahlen(zahl, message) + " Zahlen** und **" + checkPositionen(zahl, message) + " Stellen** richtig. Gib eine neue Zahl ein!";
     }
 

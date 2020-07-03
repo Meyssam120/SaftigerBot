@@ -175,7 +175,7 @@ public class Commands extends ListenerAdapter {
         else if(args[0].equalsIgnoreCase("!mastermind")) {
             e.getChannel().sendTyping().queue();
             if(args.length == 2) {
-                Mastermind.playMastermind(waiter, e);
+                new Mastermind().playMastermind(waiter, e);
             } else {
                 e.getChannel().sendMessage(e.getAuthor().getAsMention() + " Nutze **!mastermind <vierstellige Zahl>**").queue();
             }

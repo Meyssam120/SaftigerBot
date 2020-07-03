@@ -47,7 +47,7 @@ public class Main extends ListenerAdapter {
         System.out.println("Active on " + serverlist.size());
         System.out.println("ready");
         System.out.println(e.getJDA().getGuilds().size());
-        e.getJDA().getGuildById(695933469641146428L).getAudioManager().openAudioConnection(e.getJDA().getGuildById(695933469641146428L).getVoiceChannelById(695953357059260467L));
+        e.getJDA().getGuildById(695933469641146428L).getAudioManager().openAudioConnection(e.getJDA().getGuildById(695933469641146428L).getVoiceChannelById(695933469913645088L));
     }
 
     private void addAndRemove(ReadyEvent e) {
