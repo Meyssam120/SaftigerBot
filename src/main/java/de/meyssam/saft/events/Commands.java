@@ -57,12 +57,7 @@ public class Commands extends ListenerAdapter {
 
         else if(args[0].equalsIgnoreCase("!changelog")) {
             e.getChannel().sendTyping().queue();
-            //if(e.getAuthor().getId().equalsIgnoreCase(Private.msmID)) {
-            //    Utils.sendChangelog(e);
-            //    e.getMessage().delete().queue();
-            //} else  {
-                e.getChannel().sendMessage(Main.changelog).queue();
-            //}
+            e.getChannel().sendMessage(Main.changelog).queue();
         }
 
         else if(args[0].equalsIgnoreCase("!updates")) {
@@ -81,7 +76,6 @@ public class Commands extends ListenerAdapter {
                 FileManager.addWebhook(e.getGuild(), webhook.getUrl());
                 System.out.println("New Webhook: " + e.getGuild().getId());
                 e.getJDA().retrieveUserById(Private.msmID).queue(user -> user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("New Webhook: " + e.getGuild().getId()).queue()));
-                //FileManager.write(e.getGuild(), "webhook", webhook.getUrl()+"/github");
             });
             e.getChannel().sendMessage(e.getAuthor().getAsMention() + " Erfolgreich! Der Channel erhält ab jetzt Updatebenachrichtigungen.\nZum **Deaktivieren** einfach in den " +
                     "Servereinstellungen das Webhook 'Saftbot' löschen.").queue();
@@ -272,7 +266,7 @@ public class Commands extends ListenerAdapter {
             e.getMessage().delete().queue();
             File file = new File("F:\\Discord\\BotJava\\build\\libs\\fler.jpg");
             e.getChannel().sendMessage(e.getAuthor().getAsMention()).addFile(file).queue();
-        }else if(arg.equalsIgnoreCase("!news")) {
+        }else if(arg.equalsIgnoreCase("news")) {
             e.getMessage().delete().queue();
             File file = new File("F:\\Discord\\BotJava\\build\\libs\\anal.png");
             e.getChannel().sendFile(file).queue();

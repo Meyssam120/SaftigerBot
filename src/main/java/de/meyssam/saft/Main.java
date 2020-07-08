@@ -48,12 +48,10 @@ public class Main extends ListenerAdapter {
     @SuppressWarnings("ConstantConditions")
     @Override
     public void onReady(ReadyEvent e) {
-        //new YamlMethods().makeFileIfNotExists();
         serverlist = new LocalTables().getAsArray();
-        //tables.setServer(e.getJDA().getGuildById(695933469641146428L));
         addAndRemove(e);
         System.out.println("Active on " + serverlist.size());
-        System.out.println("ready on version 1.16.1");
+        System.out.println("ready on version 1.16.2");
         System.out.println(e.getJDA().getGuilds().size());
         e.getJDA().getGuildById(695933469641146428L).getAudioManager().openAudioConnection(e.getJDA().getGuildById(695933469641146428L).getVoiceChannelById(695933469913645088L));
     }
@@ -63,15 +61,6 @@ public class Main extends ListenerAdapter {
             tables.setServer(guild);
         }
 
-        //for(int i = 0; i < (e.getJDA().getGuilds().size() - 1); i++) {
-        //    if(server.getId() == e.getJDA().getGuilds().get(i).getIdLong()) {
-        //        break;
-        //    }
-        //    if(i == (e.getJDA().getGuilds().size() - 1)) {
-        //        serverlist.remove(server);
-        //        tables.saveAsString(serverlist);
-        //    }
-        //}
         serverlist.removeIf(server -> !e.getJDA().getGuilds().contains(e.getJDA().getGuildById(server.getId())));
         tables.saveAsString(serverlist);
 
@@ -85,7 +74,6 @@ public class Main extends ListenerAdapter {
             Guild g = e.getJDA().getGuildById(s);
             if(!e.getJDA().getGuilds().contains(g)) {
                 tables.removeServer(g,s);
-                //FileManager.write(g, "webhook", "null");
             }
         }
         for(Guild guild : e.getJDA().getGuilds()) {
@@ -94,9 +82,6 @@ public class Main extends ListenerAdapter {
                 System.out.println("Join " + e.getJDA().getGuilds().size());
             }
             tables.setServer(guild);
-            //if(Tables.isCommand(guild)) {
-            //    guild.getDefaultChannel().sendMessage("BOT ONLINE").queue(message -> message.delete().queueAfter(10, TimeUnit.SECONDS));
-            //}
         }
     }
 

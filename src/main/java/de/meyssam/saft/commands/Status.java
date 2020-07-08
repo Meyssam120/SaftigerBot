@@ -38,7 +38,7 @@ public class Status {
 
     private String getVoice() {
         if (server.isVoice()) {
-            return "**Aktiviert!** Wenn alle Voicechannel in einer Kategorie belegt sind, wird ein neuer erstellt (und danach wieder gelöscht)";
+            return "**Aktiviert!** Wenn alle Voicechannel in einer Kategorie belegt sind, wird ein neuer erstellt (und danach wieder gelöscht).";
         }
         return "Deaktiviert";
     }
@@ -55,6 +55,12 @@ public class Status {
     }
 
     public EmbedBuilder getStatus() {
+        int members = 0;
+        int bot = 0;
+        for(Member member : guild.getMembers()) {
+            if(member.getUser().isBot()) bot++;
+            else members++;
+        }
         EmbedBuilder out = new EmbedBuilder();
         out.setTitle(guild.getName());
         out.setColor(new Color(0x059D0A));
@@ -63,7 +69,7 @@ public class Status {
         out.setDescription("Im Folgenden findest du die Informationen und Präferenzen dieses Servers.");
 
         out.addField("Bot registriert:", "Ja", true);
-        out.addField("Nutzer:", String.valueOf(guild.getMemberCount()), true);
+        out.addField("Nutzer:", members + " Nutzer + " + bot + " Bots", true);
         out.addField("Inhaber:", guild.getOwner().getAsMention(), true);
         out.addField("Commands (!cmd):", getCommand(), true);
         out.addField("Channelverwaltung (!voice):", getVoice(), true);
