@@ -9,7 +9,7 @@ plugins {
 mainClassName = "de.meyssam.saft.Main"
 
 group 'de.meyssam'
-version '1.15'
+version '1.16'
 
 sourceCompatibility = 1.8
 
@@ -23,7 +23,7 @@ dependencies {
     shadow localGroovy()
     shadow gradleApi()
     compile 'com.jagrosh:jda-utilities:3.0.3'
-    compile 'net.dv8tion:JDA:4.2.0_170'
+    compile 'net.dv8tion:JDA:4.2.0_174'
     compile 'org.yaml:snakeyaml:1.26'
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.13'
     compile "org.slf4j:slf4j-nop:1.7.25"

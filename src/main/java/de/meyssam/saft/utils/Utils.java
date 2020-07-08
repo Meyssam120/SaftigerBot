@@ -222,14 +222,15 @@ public class Utils {
     public static void sendBug(GuildMessageReceivedEvent e, String[] args) {
         //if (!e.getMember().getPermissions().contains(Permission.ADMINISTRATOR)) return;
 
-        Invite i = e.getChannel().createInvite().setMaxUses(1).complete();
-        if(args.length > 1) {
-            e.getJDA().getUserById(Private.msmID).openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(e.getAuthor().getName() + "#" + e.getAuthor().getDiscriminator()
-                    + ": " + e.getMessage().getContentDisplay().replace("!bug ", "")).queue());
-        }
-        e.getJDA().getUserById(Private.msmID).openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(i.getUrl()).queue());
-        e.getMessage().delete().queue();
-        e.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Fehler gesendet, ein Admin wird sich bald bei dir melden! Sollte sich innerhalb 24 Stunden niemand bei dir melden, wiederhole '!bug'").queue());
+        e.getChannel().createInvite().setMaxUses(1).queue(invite -> {
+            if(args.length > 1) {
+                e.getJDA().getUserById(Private.msmID).openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(e.getAuthor().getName() + "#" + e.getAuthor().getDiscriminator()
+                        + ": " + e.getMessage().getContentDisplay().replace("!bug ", "")).queue());
+            }
+            e.getJDA().getUserById(Private.msmID).openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(invite.getUrl()).queue());
+            e.getMessage().delete().queue();
+            e.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Fehler gesendet, ein Admin wird sich bald bei dir melden! Sollte sich innerhalb 24 Stunden niemand bei dir melden, wiederhole '!bug'").queue());
+        }, throwable -> System.out.println("Invite unerfolgreich"));
     }
 
     public static void printMessage(GuildMessageReceivedEvent e) {
@@ -272,6 +273,7 @@ public class Utils {
         User user = guild.getOwner().getUser();
         String perm = permission.toString();
         user.openPrivateChannel().queue(channel -> channel.sendMessage("Ein Member deines Servers scheiterte beim Versuch den Command **" + cmd + "** auszuführen, da dem " +
-                "Bot die Berechtigung **" + perm + "** fehlt. Bitte überprüfe dies in den Rolleneinstellungen deines Servers.").queue());
+                "Bot die Berechtigung **" + perm + "** fehlt. Bitte überprüfe dies in den Rolleneinstellungen deines Servers.").queue(), throwable -> System.out.println("hurensohn"));
+        System.out.println("Error -> Guild: " + guild.getIdLong() + " Command: " + cmd + " Permission: " + perm);
     }
 }

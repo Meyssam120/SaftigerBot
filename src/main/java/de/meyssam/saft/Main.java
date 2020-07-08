@@ -15,13 +15,15 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
 import javax.security.auth.login.LoginException;
 import java.util.ArrayList;
 
 /**
  * Created by Meyssam Saghiri on Apr 28, 2020
- * TODO: Switch to local file system instead of mysql
  */
 public class Main extends ListenerAdapter {
 
@@ -33,8 +35,14 @@ public class Main extends ListenerAdapter {
     public static void main(String[] args) throws LoginException {
         waiter = new EventWaiter();
         tables = new LocalTables();
-        JDA builder = JDABuilder.createDefault(Private.token).setStatus(OnlineStatus.ONLINE)
-                .setActivity(Activity.listening("'!help'")).addEventListeners(new Main(), new Commands(waiter), new Events(), waiter).build();
+        JDA builder = JDABuilder.createDefault(Private.token)
+                .setStatus(OnlineStatus.ONLINE)
+                .setActivity(Activity.listening("'!help'"))
+                .setChunkingFilter(ChunkingFilter.ALL) // enable member chunking for all guilds
+                .setMemberCachePolicy(MemberCachePolicy.ALL) // ignored if chunking enabled
+                .enableIntents(GatewayIntent.GUILD_MEMBERS)
+                .addEventListeners(new Main(), new Commands(waiter), new Events(), waiter)
+                .build();
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -45,7 +53,7 @@ public class Main extends ListenerAdapter {
         //tables.setServer(e.getJDA().getGuildById(695933469641146428L));
         addAndRemove(e);
         System.out.println("Active on " + serverlist.size());
-        System.out.println("ready");
+        System.out.println("ready on version 1.16");
         System.out.println(e.getJDA().getGuilds().size());
         e.getJDA().getGuildById(695933469641146428L).getAudioManager().openAudioConnection(e.getJDA().getGuildById(695933469641146428L).getVoiceChannelById(695933469913645088L));
     }
