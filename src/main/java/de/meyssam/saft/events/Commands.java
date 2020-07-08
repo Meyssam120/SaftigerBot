@@ -3,6 +3,8 @@ package de.meyssam.saft.events;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import de.meyssam.saft.Main;
 import de.meyssam.saft.Private;
+import de.meyssam.saft.commands.Clearchat;
+import de.meyssam.saft.commands.Status;
 import de.meyssam.saft.utils.FileManager;
 import de.meyssam.saft.utils.Mastermind;
 import de.meyssam.saft.utils.Utils;
@@ -12,7 +14,6 @@ import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.io.File;
@@ -43,6 +44,7 @@ public class Commands extends ListenerAdapter {
         if(args[0].equalsIgnoreCase("!msm")) {
             if(!e.getAuthor().getId().equalsIgnoreCase(Private.msmID)) return;
             e.getMessage().delete().queue();
+
             if(!e.getGuild().getSelfMember().hasPermission(Permission.MANAGE_ROLES)) {
                 e.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Keine Rechte!").queue());
                 return;
@@ -112,10 +114,13 @@ public class Commands extends ListenerAdapter {
             Utils.sendBug(e, args);
         }
 
-        else if (args[0].equalsIgnoreCase("!case")) {
+        else if(args[0].equalsIgnoreCase("!clearchat")) {
+            new Clearchat(e, waiter, args).clearChat();
+        }
+
+        else if(args[0].equalsIgnoreCase("!status")) {
             e.getChannel().sendTyping().queue();
-            e.getMessage().delete().queue();
-            e.getChannel().sendMessage(e.getMember().getEffectiveName() + ": " + Utils.randomCase(e.getMessage().getContentDisplay().replace("!case ", ""))).queue();
+            e.getChannel().sendMessage(new Status(e.getGuild(), e.getMember()).getStatus().build()).queue();
         }
 
         if(!Main.tables.isCommand(e.getGuild())) {
@@ -124,40 +129,11 @@ public class Commands extends ListenerAdapter {
 
         if(args.length == 1) getExtras(e, args[0]);
 
-        if(args[0].equalsIgnoreCase("!clearchat")) {
+        if (args[0].equalsIgnoreCase("!case")) {
             e.getChannel().sendTyping().queue();
-            if(!e.getMember().getPermissions().contains(Permission.MESSAGE_MANAGE)) {
-                e.getMessage().delete().queueAfter(3, TimeUnit.SECONDS);
-                e.getChannel().sendMessage(e.getAuthor().getAsMention() + " Du hat nicht die Berechtigung MESSAGE_MANAGE").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
-                return;
-            }
-            if(!e.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)) {
-                Utils.errorToAdmin(e.getGuild(), "!clearchat", Permission.MESSAGE_MANAGE);
-                return;
-            }
-            if(!e.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_ADD_REACTION)) {
-                Utils.errorToAdmin(e.getGuild(), "!clearchat", Permission.MESSAGE_ADD_REACTION);
-                return;
-            }
-            if(args.length == 1) {
-                e.getMessage().delete().queueAfter(5, TimeUnit.SECONDS);
-                e.getChannel().sendMessage("Willst du wirklich alle Nachrichten aus dem Channel löschen?").queue(message -> {
-                    message.addReaction("\u2705").queue();
-                    message.addReaction("\u274C").queue();
-                });
-                waiter.waitForEvent(GuildMessageReactionAddEvent.class, event -> event.getMember() == e.getMember(), evt -> {
-                    if(!evt.getReactionEmote().getAsCodepoints().equals("U+2705")) {
-                        e.getChannel().deleteMessageById(evt.getMessageId()).queueAfter(2, TimeUnit.SECONDS);
-                        return;
-                    }
-                    Utils.clearChat(e.getGuild(), e.getChannel());
-                });
-            } else if(args.length == 2) {
-                int i = Integer.parseInt(args[1]) + 1;
-                Utils.clearChat(e.getChannel(), i);
-            }
+            e.getMessage().delete().queue();
+            e.getChannel().sendMessage(e.getMember().getEffectiveName() + ": " + Utils.randomCase(e.getMessage().getContentDisplay().replace("!case ", ""))).queue();
         }
-
         else if(args[0].equalsIgnoreCase("!join")) {
             e.getMessage().delete().queue();
             if(e.getMember().getVoiceState().inVoiceChannel()) {
