@@ -37,7 +37,7 @@ public class Clearchat {
         }
         if(args.length == 1) {
             e.getMessage().delete().queueAfter(5, TimeUnit.SECONDS);
-            e.getChannel().sendMessage("Willst du wirklich alle Nachrichten aus dem Channel lÃ¶schen?").queue(message -> {
+            e.getChannel().sendMessage("Willst du wirklich alle Nachrichten aus dem Channel löschen?").queue(message -> {
                 message.addReaction("\u2705").queue();
                 message.addReaction("\u274C").queue();
             });
