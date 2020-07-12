@@ -141,7 +141,7 @@ public class Commands extends ListenerAdapter {
         else if(args[0].equalsIgnoreCase("!wetter") && args.length > 1) {
             e.getChannel().sendTyping().queue();
             e.getMessage().delete().queue();
-            e.getChannel().sendMessage("Für " + e.getMember().getAsMention() + "\n" + Utils.getWeather(e.getGuild(), msg.replace("!wetter ", ""))).queue(message -> message.delete().queueAfter(1, TimeUnit.MINUTES));
+            e.getChannel().sendMessage("Für " + e.getMember().getAsMention() + "\n" + Utils.getWeather(e.getGuild(), msg.replace("!wetter ", ""))).queue();
         }
 
         else if(args[0].equalsIgnoreCase("!history")) {
