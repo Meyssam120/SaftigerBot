@@ -48,7 +48,7 @@ public class LocalTables implements FileSystem {
         Main.serverlist.add(new Server(guild.getIdLong(), true, true, true));
         Main.tables.saveAsString(Main.serverlist);
         guild.getDefaultChannel().sendMessage(Messages.welcome).queue();
-        System.out.println("Join " + guild.getJDA().getGuilds().size());
+        System.out.println("Join " + guild.getName() + " now " + guild.getJDA().getGuilds().size());
     }
 
     @Override
@@ -57,7 +57,7 @@ public class LocalTables implements FileSystem {
             //FileManager.write(guild, "registered", "false");
             Main.serverlist.remove(getServer(guild));
             Main.tables.saveAsString(Main.serverlist);
-            System.out.println("Leave " + guild.getJDA().getGuilds().size());
+            System.out.println("Leave " + guild.getName() + " now " + guild.getJDA().getGuilds().size());
         }
     }
 

@@ -37,7 +37,7 @@ public class Main extends ListenerAdapter {
         tables = new LocalTables();
         JDA builder = JDABuilder.createDefault(Private.token)
                 .setStatus(OnlineStatus.ONLINE)
-                .setActivity(Activity.listening("'!help'"))
+                .setActivity(Activity.listening("!help"))
                 .setChunkingFilter(ChunkingFilter.ALL) // enable member chunking for all guilds
                 .setMemberCachePolicy(MemberCachePolicy.ALL) // ignored if chunking enabled
                 .enableIntents(GatewayIntent.GUILD_MEMBERS)
@@ -51,7 +51,7 @@ public class Main extends ListenerAdapter {
         serverlist = new LocalTables().getAsArray();
         addAndRemove(e);
         System.out.println("Active on " + serverlist.size());
-        System.out.println("ready on version 1.16.2");
+        System.out.println("ready on version 1.16.3");
         System.out.println(e.getJDA().getGuilds().size());
         e.getJDA().getGuildById(695933469641146428L).getAudioManager().openAudioConnection(e.getJDA().getGuildById(695933469641146428L).getVoiceChannelById(695933469913645088L));
     }
