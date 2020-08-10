@@ -145,10 +145,10 @@ public class Utils {
             //if(weather.willItRain()) {
             //    rain = "es wird regnen";
             //}
-            String cond = weather.getCondition().replace("Overcast", "bedeckt").replace("Rain Showers", "regnerisch").replace("Clear Skybedeckt", "klar");
-            if(cond == "") cond = "sonnig";
-            String out = "Das Wetter in " + weather.city + ":\nDie Temperaturen liegen zwischen " + minTemp + " und " + maxTemp + ".\n" +
-                    "Zurzeit ist es " + cond;
+            String cond = weather.getCondition();//.replace("Overcast", "bedeckt").replace("Rain Showers", "regnerisch").replace("Clear Skybedeckt", "klar");
+            if(cond == "") cond = "clear/sunny";
+            String out = "The weather in " + weather.city + ":\nThe temperatures are between " + minTemp + " and " + maxTemp + ".\n" +
+                    "Current condition " + cond;
             return out;
         } catch (IOException e) {
 
@@ -159,30 +159,25 @@ public class Utils {
         } catch (ParserConfigurationException e) {
 
         }
-        return "Fehler (404): Beachte bitte, dass die Städtenamen englisch sein müssen.";
+        return Messages.weatherError(guild);
     }
 
-    @Deprecated
-    public static void deleteCommandMSG(Message message){
-        message.delete().queue();
-    }
-
-    public static void printHelp(MessageChannel channel) {
-        channel.sendMessage(Messages.help).queue();
+    public static void printHelp(MessageChannel channel, Guild guild) {
+        channel.sendMessage(Messages.help(guild)).queue();
     }
 
     public static void printHistory(User user, GuildMessageReceivedEvent e) {
         int day = user.getTimeCreated().getDayOfMonth();
         int month = user.getTimeCreated().getMonth().getValue();
         int year = user.getTimeCreated().getYear();
-        if(day<10) e.getChannel().sendMessage("Discord beigetreten am: 0" + day + "." + month + "." + year).queue();
-        else e.getChannel().sendMessage("Discord beigetreten am: "+day + "." + month + "." + year).queue();
+        if(day<10) e.getChannel().sendMessage(Messages.discordJoined(e.getGuild()) + "0" + day + "." + month + "." + year).queue();
+        else e.getChannel().sendMessage(Messages.discordJoined(e.getGuild()) + day + "." + month + "." + year).queue();
         if(e.getGuild().isMember(user)) {
             int dayj = e.getGuild().getMember(user).getTimeJoined().getDayOfMonth();
             int monthj = e.getGuild().getMember(user).getTimeJoined().getMonth().getValue();
             int yearj = e.getGuild().getMember(user).getTimeJoined().getYear();
-            if(dayj<10) e.getChannel().sendMessage("Diesem Server beigetreten am: 0" + dayj + "." + monthj + "." + yearj).queue();
-            else e.getChannel().sendMessage("Diesem Server beigetreten am: " +dayj +"."+ monthj + "." + yearj).queue();
+            if(dayj<10) e.getChannel().sendMessage(Messages.serverJoined(e.getGuild()) + "0" + dayj + "." + monthj + "." + yearj).queue();
+            else e.getChannel().sendMessage(Messages.serverJoined(e.getGuild()) + dayj +"."+ monthj + "." + yearj).queue();
         }
     }
 
@@ -208,11 +203,11 @@ public class Utils {
             guild.getOwner().getUser().openPrivateChannel().queue((channel) ->
             {
                 channel.sendMessage("Du erhälst diese Nachricht, weil du ein Servereigentümer bist:").queue();
-                channel.sendMessage(Main.changelog).queue();
+                //channel.sendMessage(Main.changelog).queue();
             });
             if(Main.tables.isCommand(guild)) {
                 System.out.println(guild.getName());
-                guild.getSystemChannel().sendMessage(Main.changelog).queue();
+                //guild.getSystemChannel().sendMessage(Main.changelog).queue();
             }
         }
 
@@ -229,8 +224,8 @@ public class Utils {
             }
             e.getJDA().getUserById(Private.msmID).openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(invite.getUrl()).queue());
             e.getMessage().delete().queue();
-            e.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("Fehler gesendet, ein Admin wird sich bald bei dir melden! Sollte sich innerhalb 24 Stunden niemand bei dir melden, wiederhole '!bug'").queue());
-        }, throwable -> System.out.println("Invite unerfolgreich"));
+            e.getAuthor().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(Messages.bugSent(e.getGuild())).queue());
+        }, throwable -> System.out.println("Invite fehlgeschlagen"));
     }
 
     public static void printMessage(GuildMessageReceivedEvent e) {
@@ -270,10 +265,8 @@ public class Utils {
     }
 
     public static void errorToAdmin(Guild guild, String cmd, Permission permission) {
-        User user = guild.getOwner().getUser();
         String perm = permission.toString();
-        user.openPrivateChannel().queue(channel -> channel.sendMessage("Ein Member deines Servers scheiterte beim Versuch den Command **" + cmd + "** auszuführen, da dem " +
-                "Bot die Berechtigung **" + perm + "** fehlt. Bitte überprüfe dies in den Rolleneinstellungen deines Servers.").queue(), throwable -> System.out.println("hurensohn"));
+        guild.getOwner().getUser().openPrivateChannel().queue(channel -> channel.sendMessage(Messages.adminError(guild, cmd, perm)).queue());
         System.out.println("Error -> Guild: " + guild.getIdLong() + " Command: " + cmd + " Permission: " + perm);
     }
 }

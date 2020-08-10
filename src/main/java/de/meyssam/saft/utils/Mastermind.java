@@ -1,6 +1,9 @@
 package de.meyssam.saft.utils;
 
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
+import de.meyssam.saft.Language;
+import de.meyssam.saft.Main;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
@@ -62,7 +65,7 @@ public class Mastermind {
     public void playMastermind(EventWaiter waiter, GuildMessageReceivedEvent e) {
         String zahl = createZahl();
         System.out.println(zahl);
-        e.getChannel().sendMessage(e.getAuthor().getAsMention() + " Du spielst jetzt **Mastermind**. Zum Beenden, errate entweder die Zahl, oder schreibe **stop**").queue();
+        e.getChannel().sendMessage(e.getAuthor().getAsMention() + Messages.mastermindBegin(e.getGuild())).queue();
         waitForMasterMind(waiter, e.getAuthor().getIdLong(), zahl, 0);
     }
 
@@ -71,32 +74,34 @@ public class Mastermind {
             User userr = event.getJDA().getUserById(user);
             String message = event.getMessage().getContentRaw().replace("!mastermind ", "");
             if(message.equalsIgnoreCase("stop")) {
-                event.getChannel().sendMessage(userr.getAsMention() + " Mastermind wurde **abgebrochen**").queue();
+                event.getChannel().sendMessage(userr.getAsMention() + Messages.mastermindAbort(event.getGuild())).queue();
                 return;
             }
             if(message.toCharArray().length != 4) {
-                event.getChannel().sendMessage(userr.getAsMention() + " Deine Zahl muss **4 Stellen** haben, versuche es erneut!").queue();
+                event.getChannel().sendMessage(userr.getAsMention() + Messages.mastermindDigits(event.getGuild())).queue();
                 waitForMasterMind(waiter, user, zahl, zaehler);
                 return;
             }
             try {
                 Integer.parseInt(message);
             }catch (NumberFormatException exception) {
-                event.getChannel().sendMessage(userr.getAsMention() + " Du musst eine **vierstellige Zahl** verwenden").queue();
+                event.getChannel().sendMessage(userr.getAsMention() + Messages.mastermindDigits(event.getGuild())).queue();
                 return;
             }
 
             if(!zahl.contains(message)) {
-                event.getChannel().sendMessage(rueckmeldung(zahl, message)).queue();
+                event.getChannel().sendMessage(rueckmeldung(event.getGuild(), zahl, message)).queue();
                 waitForMasterMind(waiter, user, zahl, zaehler+1);
             } else {
-                event.getChannel().sendMessage(userr.getAsMention() + " Herzlichen Glückwunsch, deine Zahl ist richtig! Gebrauchte Versuche: **" + zaehler + "**").queue();
+                event.getChannel().sendMessage(userr.getAsMention() + Messages.mastermindCorrect(event.getGuild(), zaehler)).queue();
             }
         });
     }
 
-    public String rueckmeldung(String zahl, String message) {
-        return "Du hast **" + checkZahlen(zahl, message) + " Zahlen** und **" + checkPositionen(zahl, message) + " Stellen** richtig. Gib eine neue Zahl ein!";
+    private String rueckmeldung(Guild guild, String zahl, String message) {
+        Language language = Main.getServer(guild).getLanguage();
+        if(language == Language.DE) return "Du hast **" + checkZahlen(zahl, message) + " Zahl(en)** und **" + checkPositionen(zahl, message) + " Stelle(n)** richtig. Gib eine neue Zahl ein!";
+        else return "You got **" + checkZahlen(zahl, message) + " number(s)** and **" + checkPositionen(zahl, message) + " position(s)** right.";
     }
 
 }

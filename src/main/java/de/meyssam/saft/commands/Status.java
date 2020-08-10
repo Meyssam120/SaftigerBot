@@ -2,6 +2,7 @@ package de.meyssam.saft.commands;
 
 import de.meyssam.saft.Main;
 import de.meyssam.saft.localsystem.Server;
+import de.meyssam.saft.utils.Messages;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -31,16 +32,16 @@ public class Status {
 
     private String getCommand() {
         if (server.isCmd()) {
-            return "**Aktiviert!** Alle Commands sind aktiv und nutzbar. Du kannst dir eine Übersicht mit `!help` ausgeben lassen.";
+            return Messages.statusCommandActivated(server);
         }
-        return "Deaktiviert";
+        return Messages.deactivated(server);
     }
 
     private String getVoice() {
         if (server.isVoice()) {
-            return "**Aktiviert!** Wenn alle Voicechannel in einer Kategorie belegt sind, wird ein neuer erstellt (und danach wieder gelöscht).";
+            return Messages.statusVoiceActivated(server);
         }
-        return "Deaktiviert";
+        return Messages.deactivated(server);
     }
 
     private void footer(EmbedBuilder out) {
@@ -51,7 +52,7 @@ public class Status {
         if(calendar.get(Calendar.MINUTE) < 10) minute = "0" + minute;
         String second = String.valueOf(calendar.get(Calendar.SECOND));
         if(calendar.get(Calendar.SECOND) < 10) second = "0" + second;
-        out.setFooter("Gesendet um " + hour + ":" + minute + ":" + second + ". Angefragt von " + member.getEffectiveName(), member.getUser().getAvatarUrl());
+        out.setFooter(Messages.statusFooter(server, hour, minute, second, member.getEffectiveName()), member.getUser().getAvatarUrl());
     }
 
     public EmbedBuilder getStatus() {
@@ -66,13 +67,13 @@ public class Status {
         out.setColor(new Color(0x059D0A));
         out.setThumbnail(guild.getIconUrl());
 
-        out.setDescription("Im Folgenden findest du die Informationen und Präferenzen dieses Servers.");
+        out.setDescription(Messages.statusDescription(server));
 
-        out.addField("Bot registriert:", "Ja", true);
-        out.addField("Nutzer:", members + " Nutzer + " + bot + " Bots", true);
-        out.addField("Inhaber:", guild.getOwner().getAsMention(), true);
+        out.addField(Messages.statusSprache(server), Main.getServer(guild).getLanguage().getName(), true);
+        out.addField(Messages.statusNutzer(server), Messages.statusNutzerCount(server, members, bot), true);
+        out.addField(Messages.statusOwner(server), guild.getOwner().getAsMention(), true);
         out.addField("Commands (!cmd):", getCommand(), true);
-        out.addField("Channelverwaltung (!voice):", getVoice(), true);
+        out.addField(Messages.statusChannel(server), getVoice(), true);
 
         out.addBlankField(false);
 

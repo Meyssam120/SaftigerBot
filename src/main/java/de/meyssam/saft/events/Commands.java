@@ -1,12 +1,14 @@
 package de.meyssam.saft.events;
 
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
+import de.meyssam.saft.Language;
 import de.meyssam.saft.Main;
 import de.meyssam.saft.Private;
 import de.meyssam.saft.commands.Clearchat;
 import de.meyssam.saft.commands.Status;
 import de.meyssam.saft.utils.FileManager;
 import de.meyssam.saft.utils.Mastermind;
+import de.meyssam.saft.utils.Messages;
 import de.meyssam.saft.utils.Utils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -14,6 +16,7 @@ import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.io.File;
@@ -57,18 +60,18 @@ public class Commands extends ListenerAdapter {
 
         else if(args[0].equalsIgnoreCase("!changelog")) {
             e.getChannel().sendTyping().queue();
-            e.getChannel().sendMessage(Main.changelog).queue();
+            e.getChannel().sendMessage(":warning: Changelogs have moved to `!updates`").queue();
         }
 
         else if(args[0].equalsIgnoreCase("!updates")) {
             e.getChannel().sendTyping().queue();
             e.getMessage().delete().queue();
             if(!e.getMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
-                e.getChannel().sendMessage(e.getAuthor().getAsMention() + " du hast nicht die Berechtigung MANAGE_WEBHOOKS").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
+                e.getChannel().sendMessage(Messages.noPermissionUser(e.getGuild(), Permission.MANAGE_WEBHOOKS)).queue();
                 return;
             }
             if(!e.getGuild().getSelfMember().hasPermission(Permission.MANAGE_WEBHOOKS)) {
-                e.getChannel().sendMessage(e.getAuthor().getAsMention() + " der Bot hat nicht die Berechtigung MANAGE_WEBHOOKS").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
+                e.getChannel().sendMessage(Messages.noPermissionBot(e.getGuild(), Permission.MANAGE_WEBHOOKS)).queue();
                 Utils.errorToAdmin(e.getGuild(), "!updates", Permission.MANAGE_WEBHOOKS);
                 return;
             }
@@ -77,8 +80,7 @@ public class Commands extends ListenerAdapter {
                 System.out.println("New Webhook: " + e.getGuild().getId());
                 e.getJDA().retrieveUserById(Private.msmID).queue(user -> user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage("New Webhook: " + e.getGuild().getId()).queue()));
             });
-            e.getChannel().sendMessage(e.getAuthor().getAsMention() + " Erfolgreich! Der Channel erhält ab jetzt Updatebenachrichtigungen.\nZum **Deaktivieren** einfach in den " +
-                    "Servereinstellungen das Webhook 'Saftbot' löschen.").queue();
+            e.getChannel().sendMessage(Messages.webhookSuccess(e.getGuild(), e.getAuthor().getAsMention())).queue();
         }
 
         else if(args[0].equalsIgnoreCase("!cmd")) {
@@ -86,8 +88,15 @@ public class Commands extends ListenerAdapter {
             if (!e.getMember().getPermissions().contains(Permission.ADMINISTRATOR)) return;
             Main.tables.setCommand(e.getGuild());
             e.getMessage().delete().queue();
-            if(Main.tables.isCommand(e.getGuild())) e.getChannel().sendMessage("Commands sind jetzt auf diesem Server aktiviert!").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
-            else e.getChannel().sendMessage("Commands sind nun auf diesem Server deaktiviert").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
+            e.getChannel().sendMessage(Messages.changeCommand(e.getGuild())).queue();
+        }
+
+        else if(args[0].equalsIgnoreCase("!lang")) {
+            if(!e.getMember().hasPermission(Permission.ADMINISTRATOR)) {
+                e.getChannel().sendMessage(Messages.noPermissionUser(e.getGuild(), Permission.ADMINISTRATOR)).queue();
+                return;
+            }
+            changeLang(e);
         }
 
         else if(args[0].equalsIgnoreCase("!voice")) {
@@ -95,8 +104,8 @@ public class Commands extends ListenerAdapter {
             if (!e.getMember().getPermissions().contains(Permission.ADMINISTRATOR)) return;
             Main.tables.setVoice(e.getGuild());
             e.getMessage().delete().queue();
-            if(Main.tables.isVoice(e.getGuild())) e.getChannel().sendMessage("Automatische Channels sind jetzt auf diesem Server aktiviert!").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
-            else e.getChannel().sendMessage("Automatische Channels sind nun auf diesem Server deaktiviert").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
+            if(Main.tables.isVoice(e.getGuild())) e.getChannel().sendMessage(Messages.activateVoice(e.getGuild())).queue();
+            else e.getChannel().sendMessage(Messages.deactivateVoice(e.getGuild())).queue();
         }
 
         else if(args[0].equalsIgnoreCase("!bug")) {
@@ -138,10 +147,10 @@ public class Commands extends ListenerAdapter {
             e.getChannel().sendMessage("Du musst in einem Voicechannel sein!").queue(message -> message.delete().queueAfter(3, TimeUnit.SECONDS));
         }
 
-        else if(args[0].equalsIgnoreCase("!wetter") && args.length > 1) {
+        else if(args[0].equalsIgnoreCase("!weather") && args.length > 1) {
             e.getChannel().sendTyping().queue();
             e.getMessage().delete().queue();
-            e.getChannel().sendMessage("Für " + e.getMember().getAsMention() + "\n" + Utils.getWeather(e.getGuild(), msg.replace("!wetter ", ""))).queue();
+            e.getChannel().sendMessage("Für " + e.getMember().getAsMention() + "\n" + Utils.getWeather(e.getGuild(), msg.replace("!weather ", ""))).queue();
         }
 
         else if(args[0].equalsIgnoreCase("!history")) {
@@ -158,11 +167,11 @@ public class Commands extends ListenerAdapter {
             if(args.length == 2) {
                 new Mastermind().playMastermind(waiter, e);
             } else {
-                e.getChannel().sendMessage(e.getAuthor().getAsMention() + " Nutze **!mastermind <vierstellige Zahl>**").queue();
+                e.getChannel().sendMessage(e.getAuthor().getAsMention() + Messages.wrongSyntax(e.getGuild(), "!mastermind <1324>")).queue();
             }
         }
 
-        else if(args[0].equalsIgnoreCase("!help")) Utils.printHelp(e.getChannel());
+        else if(args[0].equalsIgnoreCase("!help")) Utils.printHelp(e.getChannel(), e.getGuild());
     }
 
     @Override
@@ -271,6 +280,26 @@ public class Commands extends ListenerAdapter {
             File file = new File("F:\\Discord\\BotJava\\build\\libs\\anal.png");
             e.getChannel().sendFile(file).queue();
         }
+    }
+
+    private void changeLang(GuildMessageReceivedEvent e) {
+        e.getChannel().sendMessage(Messages.changeLanguageAsk(e.getGuild())).queue(message -> {
+            message.addReaction("\uD83C\uDDEC\uD83C\uDDE7").queue();
+            message.addReaction("\uD83C\uDDE9\uD83C\uDDEA").queue();
+        });
+        waiter.waitForEvent(GuildMessageReactionAddEvent.class, guildMessageReactionAddEvent -> guildMessageReactionAddEvent.getMember() == e.getMember(), event -> {
+            if(event.getReactionEmote().getAsCodepoints().equals("U+1f1ecU+1f1e7")) {
+                //English
+                Main.tables.setLanguage(e.getGuild(), Language.EN);
+                e.getChannel().sendMessage(Messages.changeLanguage(e.getGuild())).queue();
+                event.getChannel().deleteMessageById(event.getMessageIdLong()).queueAfter(5, TimeUnit.SECONDS);
+            } else if(event.getReactionEmote().getAsCodepoints().equals("U+1f1e9U+1f1ea")) {
+                //Deutsch
+                Main.tables.setLanguage(e.getGuild(), Language.DE);
+                e.getChannel().sendMessage(Messages.changeLanguage(e.getGuild())).queue();
+                event.getChannel().deleteMessageById(event.getMessageIdLong()).queueAfter(5, TimeUnit.SECONDS);
+            }
+        });
     }
 
 }

@@ -1,5 +1,6 @@
 package de.meyssam.saft.localsystem;
 
+import de.meyssam.saft.Language;
 import de.meyssam.saft.Main;
 import de.meyssam.saft.utils.FileManager;
 import de.meyssam.saft.utils.Messages;
@@ -18,7 +19,8 @@ public class LocalTables implements FileSystem {
             builder.append(server.getId()).append(" ");
             builder.append(server.isRegistered()).append(" ");
             builder.append(server.isCmd()).append(" ");
-            builder.append(server.isVoice()).append(".");
+            builder.append(server.isVoice()).append(" ");
+            builder.append(server.getLanguage().toString()).append(".");
         }
         builder.deleteCharAt(builder.length()-1);
         FileManager.write("array", builder);
@@ -31,7 +33,7 @@ public class LocalTables implements FileSystem {
         String[] server = a.split("\\.");
         for (String s : server) {
             String[] temp = s.split(" ");
-            out.add(new Server(Long.parseLong(temp[0]), Boolean.parseBoolean(temp[1]), Boolean.parseBoolean(temp[2]), Boolean.parseBoolean(temp[3])));
+            out.add(new Server(Long.parseLong(temp[0]), Boolean.parseBoolean(temp[1]), Boolean.parseBoolean(temp[2]), Boolean.parseBoolean(temp[3]), getLanguage(temp[4])));
         }
         return out;
     }
@@ -45,7 +47,7 @@ public class LocalTables implements FileSystem {
         //}
         //FileManager.addServer(guild);
         if(isRegistered(guild)) return;
-        Main.serverlist.add(new Server(guild.getIdLong(), true, true, true));
+        Main.serverlist.add(new Server(guild.getIdLong(), true, true, true, Language.EN));
         Main.tables.saveAsString(Main.serverlist);
         guild.getDefaultChannel().sendMessage(Messages.welcome).queue();
         System.out.println("Join " + guild.getName() + " now " + guild.getJDA().getGuilds().size());
@@ -89,6 +91,11 @@ public class LocalTables implements FileSystem {
         Main.tables.saveAsString(Main.serverlist);
     }
 
+    public void setLanguage(Guild guild, Language language) {
+        getServer(guild).setLanguage(language);
+        Main.tables.saveAsString(Main.serverlist);
+    }
+
     @Override
     public boolean isRegistered(Guild guild) {
         if(getServer(guild) == null) return false;
@@ -106,5 +113,10 @@ public class LocalTables implements FileSystem {
     @Override
     public List<String> allServers() {
         return null;
+    }
+
+    private Language getLanguage(String language) {
+        if(language.equals("DE")) return Language.DE;
+        return Language.EN;
     }
 }

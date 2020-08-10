@@ -1,6 +1,7 @@
 package de.meyssam.saft.commands;
 
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
+import de.meyssam.saft.utils.Messages;
 import de.meyssam.saft.utils.Utils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -24,7 +25,7 @@ public class Clearchat {
         e.getChannel().sendTyping().queue();
         if(!e.getMember().getPermissions().contains(Permission.MESSAGE_MANAGE)) {
             e.getMessage().delete().queueAfter(3, TimeUnit.SECONDS);
-            e.getChannel().sendMessage(e.getAuthor().getAsMention() + " Du hat nicht die Berechtigung MESSAGE_MANAGE").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
+            e.getChannel().sendMessage(Messages.noPermissionUser(e.getGuild(), Permission.MESSAGE_MANAGE)).queue();
             return;
         }
         if(!e.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)) {
@@ -37,7 +38,7 @@ public class Clearchat {
         }
         if(args.length == 1) {
             e.getMessage().delete().queueAfter(5, TimeUnit.SECONDS);
-            e.getChannel().sendMessage("Willst du wirklich alle Nachrichten aus dem Channel löschen?").queue(message -> {
+            e.getChannel().sendMessage(Messages.clearchat(e.getGuild())).queue(message -> {
                 message.addReaction("\u2705").queue();
                 message.addReaction("\u274C").queue();
             });

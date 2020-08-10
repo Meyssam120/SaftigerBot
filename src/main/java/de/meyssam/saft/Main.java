@@ -27,7 +27,6 @@ import java.util.ArrayList;
  */
 public class Main extends ListenerAdapter {
 
-    public static String changelog = Messages.changelog113;
     public static EventWaiter waiter;
     public static LocalTables tables;
     public static ArrayList<Server> serverlist;
@@ -51,7 +50,7 @@ public class Main extends ListenerAdapter {
         serverlist = new LocalTables().getAsArray();
         addAndRemove(e);
         System.out.println("Active on " + serverlist.size());
-        System.out.println("ready on version 1.16.3");
+        System.out.println("ready on version 1.17");
         System.out.println(e.getJDA().getGuilds().size());
         e.getJDA().getGuildById(695933469641146428L).getAudioManager().openAudioConnection(e.getJDA().getGuildById(695933469641146428L).getVoiceChannelById(695933469913645088L));
     }
@@ -83,6 +82,13 @@ public class Main extends ListenerAdapter {
             }
             tables.setServer(guild);
         }
+    }
+
+    public static Server getServer(Guild guild) {
+        for(Server server : Main.serverlist) {
+            if(server.getId() == guild.getIdLong()) return server;
+        }
+        return null;
     }
 
 
