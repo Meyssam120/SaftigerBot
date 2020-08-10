@@ -170,7 +170,7 @@ public class Messages {
 
     public static String statusCommandActivated(Server guild) {
         if(guild.getLanguage() == Language.DE) return "**Aktiviert!** Alle Commands sind aktiv und nutzbar. Du kannst dir eine Übersicht mit `!help` ausgeben lassen.";
-        else return "**Activated!** All commands are turned on and active. You can print an overview with `!help`.";
+        else return "**Activated!** All commands are active. You can print an overview with `!help`";
     }
 
     public static String statusVoiceActivated(Server guild) {
