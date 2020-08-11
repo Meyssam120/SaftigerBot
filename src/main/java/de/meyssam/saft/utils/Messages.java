@@ -37,7 +37,7 @@ public class Messages {
                 "```stonks = Guck was passiert*```" +
                 "```!updates = Wird ab sofort in diesen Channel die Entwicklungsfortschritte des Bots broadcasten```" +
                 "```!voice = (De-)Aktiviert automatische Channels```"+
-                "```!wetter <Stadt> = Zeigt das Wetter der Stadt an (Stadt muss englisch sein: Düsseldorf = Dusseldorf; Köln = Cologne)*```" +
+                "```!weather <Stadt> = Zeigt das Wetter der Stadt an (Stadt muss englisch sein: Düsseldorf = Dusseldorf; Köln = Cologne)*```" +
                 "Einige Commands benötigen die passende Berechtigung.\n" +
                 ":warning: Die Channelverwaltung ist nur für Channel gedacht, die in eine Kategorie eingeordnet sind. Für mehr Infos `!status`\n" +
                 "Legende: [] = optional";
@@ -54,7 +54,7 @@ public class Messages {
                 "```stonks = Meme*```" +
                 "```!updates = Subscribes to changelogs which will be sent to this channel```" +
                 "```!voice = (De-)Activates automatic channels```"+
-                "```!wetter <City> = Retrieves the weather*```" +
+                "```!weather <City> = Retrieves the weather*```" +
                 "You need specific permissions for some commands.\n" +
                 ":warning: Automatic channels only work for channels in a category. For more information `!status`\n" +
                 "Legend: [] = optional";
