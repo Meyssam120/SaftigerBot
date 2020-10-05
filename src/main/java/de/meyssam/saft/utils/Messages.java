@@ -62,14 +62,14 @@ public class Messages {
 
     public static String noPermissionUser(Guild guild, Permission permission) {
         Language language = Main.getServer(guild).getLanguage();
-        if(language == Language.DE) return "Hierfür fehlen dir die nötigen Rechte! " + permission.getName();
-        return "You lack permissions to do that! " + permission.getName();
+        if(language == Language.DE) return "Hierfür fehlen dir die nötigen Rechte! " + permission.toString();
+        return "You lack permissions to do that! " + permission.toString();
     }
 
     public static String noPermissionBot(Guild guild, Permission permission) {
         Language language = Main.getServer(guild).getLanguage();
-        if(language == Language.DE) return "Dem Bot fehlt die nötige Berechtigung: " + permission.getName();
-        return "The bot needs a permission to do that: " + permission.getName();
+        if(language == Language.DE) return "Dem Bot fehlt die nötige Berechtigung: " + permission.toString();
+        return "The bot needs a permission to do that: " + permission.toString();
     }
 
     public static String wrongSyntax(Guild guild, String syntax) {

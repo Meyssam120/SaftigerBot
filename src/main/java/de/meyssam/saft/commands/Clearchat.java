@@ -47,7 +47,7 @@ public class Clearchat {
                     e.getChannel().deleteMessageById(evt.getMessageId()).queueAfter(2, TimeUnit.SECONDS);
                     return;
                 }
-                Utils.clearChat(e.getGuild(), e.getChannel());
+                Utils.clearChat(e.getChannel());
             });
         } else if(args.length == 2) {
             int i = Integer.parseInt(args[1]) + 1;

@@ -192,6 +192,8 @@ public class Commands extends ListenerAdapter {
                 e.getChannelJoined().getManager().setUserLimit(81).queue();
             }else if(e.getChannelJoined().getMembers().size() == 7) {
                 e.getChannelJoined().getManager().setUserLimit(47).queue();
+            }else if(e.getChannelJoined().getMembers().size() == 8) {
+                e.getChannelJoined().getManager().setUserLimit(80).queue();
             }
         }
     }
@@ -214,6 +216,8 @@ public class Commands extends ListenerAdapter {
                 e.getChannelJoined().getManager().setUserLimit(81).queue();
             }else if(e.getChannelJoined().getMembers().size() == 7) {
                 e.getChannelJoined().getManager().setUserLimit(47).queue();
+            }else if(e.getChannelJoined().getMembers().size() == 8) {
+                e.getChannelJoined().getManager().setUserLimit(80).queue();
             }
         }
         if(e.getGuild().getIdLong() == 695933469641146428L) {
@@ -233,6 +237,8 @@ public class Commands extends ListenerAdapter {
                 e.getChannelLeft().getManager().setUserLimit(47).queue();
             }else if(e.getChannelLeft().getMembers().size() == 0) {
                 e.getChannelLeft().getManager().setUserLimit(69).queue();
+            }else if(e.getChannelLeft().getMembers().size() == 8) {
+                e.getChannelLeft().getManager().setUserLimit(80).queue();
             }
         }
     }
@@ -257,6 +263,8 @@ public class Commands extends ListenerAdapter {
                 e.getChannelLeft().getManager().setUserLimit(47).queue();
             }else if(e.getChannelLeft().getMembers().size() == 0) {
                 e.getChannelLeft().getManager().setUserLimit(69).queue();
+            }else if(e.getChannelLeft().getMembers().size() == 8) {
+                e.getChannelLeft().getManager().setUserLimit(80).queue();
             }
         }
     }

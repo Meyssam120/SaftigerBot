@@ -191,7 +191,7 @@ public class Utils {
         channel.sendMessage("Channel geleert! :zipper_mouth:").queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
     }
 
-    public static void clearChat(Guild guild, MessageChannel channel) {
+    public static void clearChat(MessageChannel channel) {
         for (Message message : channel.getIterableHistory()) {
             message.delete().queueAfter(10, TimeUnit.MILLISECONDS);
         }
@@ -219,7 +219,7 @@ public class Utils {
 
         e.getChannel().createInvite().setMaxUses(1).queue(invite -> {
             if(args.length > 1) {
-                e.getJDA().getUserById(Private.msmID).openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(e.getAuthor().getName() + "#" + e.getAuthor().getDiscriminator()
+                e.getJDA().getUserById(Private.msmID).openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(e.getAuthor().getAsMention()
                         + ": " + e.getMessage().getContentDisplay().replace("!bug ", "")).queue());
             }
             e.getJDA().getUserById(Private.msmID).openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(invite.getUrl()).queue());
