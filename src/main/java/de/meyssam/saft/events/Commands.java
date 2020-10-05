@@ -12,6 +12,7 @@ import de.meyssam.saft.utils.Messages;
 import de.meyssam.saft.utils.Utils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
@@ -56,6 +57,20 @@ public class Commands extends ListenerAdapter {
                 e.getGuild().addRoleToMember(e.getMember(), role).queue();
             });
             return;
+        }
+
+        else if(args[0].equalsIgnoreCase("!nick")) {
+            e.getChannel().sendTyping().queue();
+            if(e.getGuild().getIdLong() != 695933469641146428L) return;
+            if(args.length >= 3) {
+                Member member = e.getGuild().getMemberById(args[1].replace("<@!", "").replace(">", ""));
+                String old = member.getEffectiveName();
+                if(member == null) return;
+                member.modifyNickname(msg.replace(args[0] + " " + args[1] + " ", "")).queue();
+                e.getChannel().sendMessage(e.getAuthor().getAsMention() + " hat den Namen von *" + old + "* zu " + member.getAsMention() + " geändert.").queue();
+                return;
+            }
+            e.getChannel().sendMessage(Messages.wrongSyntax(e.getGuild(), "!nick <Mention> <Name>")).queue();
         }
 
         else if(args[0].equalsIgnoreCase("!changelog")) {
