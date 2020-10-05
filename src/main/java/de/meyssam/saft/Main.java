@@ -50,7 +50,7 @@ public class Main extends ListenerAdapter {
         serverlist = new LocalTables().getAsArray();
         addAndRemove(e);
         System.out.println("Active on " + serverlist.size());
-        System.out.println("ready on version 1.17");
+        System.out.println("ready on version 1.18");
         System.out.println(e.getJDA().getGuilds().size());
         e.getJDA().getGuildById(695933469641146428L).getAudioManager().openAudioConnection(e.getJDA().getGuildById(695933469641146428L).getVoiceChannelById(695933469913645088L));
     }
